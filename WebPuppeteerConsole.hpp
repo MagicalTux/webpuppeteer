@@ -9,6 +9,7 @@ public:
 
 public slots:
 	void log(QString msg);
+	void sleep(int msecs);
 
 private:
 	WebPuppeteer *parent;
