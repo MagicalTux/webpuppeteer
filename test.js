@@ -12,6 +12,8 @@ console.log("loaded, taking screenshot & saving as PDF!");
 
 tab.eval("document.getElementsByName(\"q\")[0].value = \"Real men input their search here!\"");
 
+console.log("current search value: "+tab.eval("document.getElementsByName(\"q\")[0].value"));
+
 tab.screenshot("google.png");
 tab.print("google.pdf");
 
