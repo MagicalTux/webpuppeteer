@@ -41,26 +41,53 @@ sys.sleep(1000);
 
 Opens a new tab and returns a new WebPuppeteerTab object.
 
+### get(url)
+
+Get data from url, returns it.
+
+```javascript
+var next = JSON.parse(sys.get("http://localhost/next.php"));
+```
+
 ## WebPuppeteerTab
 
 ### browse(url)
 
+Browse to given url, waits until url is fully loaded.
+
 ### screenshot(filename)
+
+Take a screenshot of the current page at current resolution.
 
 ### fullshot(filename)
 
+Take a full-size screenshot of the page, even if it extends over the current resolution.
+
 ### print(filename)
+
+Outputs current page as PDF.
 
 ### eval(javascript)
 
+Execute javascript code in the page.
+
 ### findFirst(selectorQuery)
+
+Locate first element matching the CSS2 selector passed as argument.
 
 ### findAll(selectorQuery)
 
+Locate all elements matching the CSS2 selector passed as argument.
+
 ### document()
+
+Returns the document element.
 
 ### treeDump()
 
+Dump webkit's internal rendering tree.
+
 ### interact()
 
+Opens the page in a window, and give the user opportunity to interact with the page.
 

@@ -1,5 +1,6 @@
 #include <QObject>
 #include <QScriptValue>
+#include <QNetworkAccessManager>
 
 class WebPuppeteer;
 class WebPuppeteerTab;
@@ -10,11 +11,13 @@ public:
 	WebPuppeteerSys(WebPuppeteer *parent);
 
 public slots:
-	void log(QString msg);
+	void log(const QString &msg);
 	void sleep(int msecs);
+	QScriptValue get(const QString &url);
 	QScriptValue newTab();
 
 private:
 	WebPuppeteer *parent;
+	QNetworkAccessManager net;
 };
 
