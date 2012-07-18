@@ -8,5 +8,8 @@ console.log("finished!");
 console.log("Loading google.com...");
 tab = sys.newTab();
 tab.browse("http://www.google.com/");
-console.log("loaded!");
+console.log("loaded, taking screenshot & saving as PDF!");
+
+tab.screenshot("google.png");
+tab.print("google.pdf");
 
