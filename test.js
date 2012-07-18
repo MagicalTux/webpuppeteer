@@ -7,10 +7,14 @@ tab.browse("http://www.google.com/");
 console.log("loaded, messing with the page");
 
 tab.eval("document.getElementsByName(\"q\")[0].value = \"Real men input their search here!\"");
+console.log("current search value: "+tab.eval("document.getElementsByName(\"q\")[0].value"));
 
-console.log("current search value (method 1): "+tab.eval("document.getElementsByName(\"q\")[0].value"));
-
-console.log("input name=q: "+tab.findFirst("input[name=\"q\"]").xml());
+// get all inputs
+console.log("Listing all input tags:");
+inputs = tab.findAll("input");
+for(var i=0; i<inputs.length; i++) {
+	console.log("input: "+inputs[i].xml());
+}
 
 console.log("taking screenshot");
 

@@ -75,6 +75,19 @@ QScriptValue WebPuppeteerTab::findFirst(const QString &selector) {
 	return parent->engine().newQObject(new WebPuppeteerWebElement(el));
 }
 
+QScriptValue WebPuppeteerTab::findAll(const QString &selector) {
+	QScriptValue res = parent->engine().newArray();
+	QWebElementCollection c = page->mainFrame()->findAllElements(selector);
+	for(int i = 0; i < c.count(); i++) {
+		res.setProperty(i, parent->engine().newQObject(new WebPuppeteerWebElement(c.at(i))));
+	}
+	return res;
+}
+
+QScriptValue WebPuppeteerTab::document() {
+	return parent->engine().newQObject(new WebPuppeteerWebElement(page->mainFrame()->documentElement()));
+}
+
 QString WebPuppeteerTab::treeDump() {
 	return page->mainFrame()->renderTreeDump();
 }

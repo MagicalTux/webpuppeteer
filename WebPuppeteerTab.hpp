@@ -17,6 +17,8 @@ public slots:
 	bool print(const QString &filename); // print page as PDF
 	QScriptValue eval(const QString &js); // evaluate JS in the window context
 	QScriptValue findFirst(const QString &selector);
+	QScriptValue findAll(const QString &selector);
+	QScriptValue document();
 	QString treeDump(); // for debug
 
 	// for internal use

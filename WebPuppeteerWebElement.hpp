@@ -10,6 +10,7 @@ public slots:
 	QString attribute(const QString &name);
 	void setAttribute(const QString &name, const QString &value);
 	QString xml(); // return element as xml
+	void eval(const QString &js);
 
 private:
 	QWebElement e;

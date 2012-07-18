@@ -16,3 +16,6 @@ QString WebPuppeteerWebElement::xml() {
 	return e.toOuterXml();
 }
 
+void WebPuppeteerWebElement::eval(const QString &js) {
+	e.evaluateJavaScript(js);
+}
