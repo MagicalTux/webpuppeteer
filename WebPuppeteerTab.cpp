@@ -5,7 +5,8 @@
 #include <QPainter>
 #include <QPrinter>
 
-WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *parent): QObject(parent) {
+WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QObject(_parent) {
+	parent = _parent;
 	page = new QWebPage(this);
 
 	// define standard values
@@ -62,5 +63,9 @@ bool WebPuppeteerTab::print(const QString &filename) {
 	page->mainFrame()->render(&print_p);
 	print_p.end();
 	return true;
+}
+
+QScriptValue WebPuppeteerTab::eval(const QString &js) {
+	return parent->engine().newVariant(page->mainFrame()->evaluateJavaScript(js));
 }
 

@@ -10,6 +10,8 @@ tab = sys.newTab();
 tab.browse("http://www.google.com/");
 console.log("loaded, taking screenshot & saving as PDF!");
 
+tab.eval("document.getElementsByName(\"q\")[0].value = \"Real men input their search here!\"");
+
 tab.screenshot("google.png");
 tab.print("google.pdf");
 
