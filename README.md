@@ -14,11 +14,11 @@ To have xvfb on Gentoo:
 
 - x11-base/xorg-server minimal
 
-# Tell me what that JS can do
+# Tell me what that scripts can do
 
-## sys
+## WebPuppeteerSys
 
-Initially you have access to a "sys" object (also aliased as "console" so you can type console.log(...) without any issue). This object has the following methods.
+Initially you have access to this object in "sys" global (also aliased as "console" so you can type console.log(...) without any issue). This object has the following methods.
 
 ### log(message)
 
@@ -30,5 +30,37 @@ sys.log("Ready!");
 
 ### sleep(msec)
 
+A bold name for a bold function. It basically waits for the specified amount of time (for example if a page contains some JS code that takes a bit of time to be ready) specified in milliseconds.
+
+For example to wait one second:
+```javascript
+sys.sleep(1000);
+```
+
 ### newTab()
+
+Opens a new tab and returns a new WebPuppeteerTab object.
+
+## WebPuppeteerTab
+
+### browse(url)
+
+### screenshot(filename)
+
+### fullshot(filename)
+
+### print(filename)
+
+### eval(javascript)
+
+### findFirst(selectorQuery)
+
+### findAll(selectorQuery)
+
+### document()
+
+### treeDump()
+
+### interact()
+
 
