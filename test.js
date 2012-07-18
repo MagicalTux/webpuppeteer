@@ -5,3 +5,6 @@ console.log("hi, it's me... Waiting 500 ms");
 sys.sleep(500);
 console.log("finished!");
 
+tab = sys.newTab();
+tab.browse("http://www.google.com/");
+

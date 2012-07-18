@@ -3,13 +3,15 @@
 #include <QScriptEngine>
 #include "WebPuppeteer.hpp"
 #include "WebPuppeteerSys.hpp"
+#include "WebPuppeteerTab.hpp"
 
 WebPuppeteer::WebPuppeteer(QString _file) {
 	file = _file;
 	exit_code = 0;
+
 	sys = new WebPuppeteerSys(this);
 
-	QScriptValue val_sys = e.newQObject(sys, QScriptEngine::QtOwnership, QScriptEngine::ExcludeChildObjects | QScriptEngine::ExcludeDeleteLater);
+	QScriptValue val_sys = e.newQObject(sys, QScriptEngine::QtOwnership, QScriptEngine::ExcludeChildObjects | QScriptEngine::ExcludeSuperClassContents);
 	e.globalObject().setProperty("sys", val_sys);
 	e.globalObject().setProperty("console", val_sys);
 }
@@ -36,5 +38,9 @@ void WebPuppeteer::start() {
 	}
 
 	QCoreApplication::exit(exit_code);
+}
+
+QScriptEngine &WebPuppeteer::engine() {
+	return e;
 }
 

@@ -7,6 +7,7 @@ class WebPuppeteer: public QObject {
 	Q_OBJECT;
 public:
 	WebPuppeteer(QString file);
+	QScriptEngine &engine();
 
 public slots:
 	void start();
