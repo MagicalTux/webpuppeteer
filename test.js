@@ -17,6 +17,9 @@ for(var i=0; i<inputs.length; i++) {
 	console.log("input: "+inputs[i].xml());
 }
 
+console.log("showing page to user and allowing interaction");
+tab.interact();
+
 console.log("taking screenshot");
 
 tab.screenshot("google.png");

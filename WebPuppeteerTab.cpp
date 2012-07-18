@@ -5,6 +5,7 @@
 #include <QWebFrame>
 #include <QPainter>
 #include <QPrinter>
+#include <QWebView>
 
 WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QObject(_parent) {
 	parent = _parent;
@@ -90,5 +91,16 @@ QScriptValue WebPuppeteerTab::document() {
 
 QString WebPuppeteerTab::treeDump() {
 	return page->mainFrame()->renderTreeDump();
+}
+
+void WebPuppeteerTab::interact() {
+	QEventLoop e;
+
+	QWebView *v = new QWebView();
+	v->setAttribute(Qt::WA_DeleteOnClose, true);
+	connect(v, SIGNAL(destroyed(QObject*)), &e, SLOT(quit()));
+	v->setPage(page);
+	v->show();
+	e.exec();
 }
 

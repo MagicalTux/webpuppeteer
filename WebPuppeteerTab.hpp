@@ -20,6 +20,7 @@ public slots:
 	QScriptValue findAll(const QString &selector);
 	QScriptValue document();
 	QString treeDump(); // for debug
+	void interact(); // create a window alloing the user to interact with the page, wait until closed
 
 	// for internal use
 	void setReturnBool(bool);
