@@ -13,6 +13,7 @@ console.log("current search value: "+tab.eval("document.getElementsByName(\"q\")
 console.log("Listing all input tags:");
 inputs = tab.findAll("input");
 for(var i=0; i<inputs.length; i++) {
+	inputs[i].setStyleProperty("color", "red !important");
 	console.log("input: "+inputs[i].xml());
 }
 

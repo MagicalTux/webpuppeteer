@@ -12,6 +12,10 @@ public slots:
 	QString xml(); // return element as xml
 	void eval(const QString &js);
 
+	// CSS
+	void setStyleProperty(const QString &name, const QString &value);
+	QString getComputedStyle(const QString &name);
+
 private:
 	QWebElement e;
 };

@@ -19,3 +19,12 @@ QString WebPuppeteerWebElement::xml() {
 void WebPuppeteerWebElement::eval(const QString &js) {
 	e.evaluateJavaScript(js);
 }
+
+void WebPuppeteerWebElement::setStyleProperty(const QString &name, const QString &value) {
+	e.setStyleProperty(name, value);
+}
+
+QString WebPuppeteerWebElement::getComputedStyle(const QString &name) {
+	return e.styleProperty(name, QWebElement::ComputedStyle);
+}
+
