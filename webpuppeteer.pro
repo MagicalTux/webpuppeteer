@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = 
 DEPENDPATH += .
 INCLUDEPATH += .
-QT += script
+QT += script webkit
 
 # Input
 HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp

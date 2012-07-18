@@ -1,4 +1,5 @@
 #include <QObject>
+#include <QWebPage>
 
 class WebPuppeteer;
 
@@ -8,6 +9,13 @@ public:
 	WebPuppeteerTab(WebPuppeteer *parent);
 
 public slots:
-	void browse(const QString &url);
+	bool browse(const QString &url);
+
+	// for internal use
+	void setReturnBool(bool);
+
+private:
+	QWebPage *page;
+	bool return_bool;
 };
 
