@@ -1,6 +1,7 @@
 #include <QObject>
 #include <QWebPage>
 #include <QScriptValue>
+#include <QWebElement>
 
 class WebPuppeteer;
 
@@ -15,6 +16,8 @@ public slots:
 	bool fullshot(const QString &filename); // take full-size screenshot at url
 	bool print(const QString &filename); // print page as PDF
 	QScriptValue eval(const QString &js); // evaluate JS in the window context
+	QScriptValue findFirst(const QString &selector);
+	QString treeDump(); // for debug
 
 	// for internal use
 	void setReturnBool(bool);

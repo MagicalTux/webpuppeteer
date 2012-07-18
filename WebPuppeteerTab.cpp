@@ -1,4 +1,5 @@
 #include "WebPuppeteerTab.hpp"
+#include "WebPuppeteerWebElement.hpp"
 #include "WebPuppeteer.hpp"
 #include <QEventLoop>
 #include <QWebFrame>
@@ -57,7 +58,6 @@ bool WebPuppeteerTab::print(const QString &filename) {
 
 	// we know our page is 72dpi, how many dpi do we need on the printer to fit it ?
 	int dpi = (page->mainFrame()->contentsSize().width() * print.paperSize(QPrinter::Inch).width() / 72.0) * 1.06;
-	qDebug("printer dpi=%d", dpi);
 	print.setResolution(dpi);
 	QPainter print_p(&print);
 	page->mainFrame()->render(&print_p);
@@ -67,5 +67,15 @@ bool WebPuppeteerTab::print(const QString &filename) {
 
 QScriptValue WebPuppeteerTab::eval(const QString &js) {
 	return parent->engine().newVariant(page->mainFrame()->evaluateJavaScript(js));
+}
+
+QScriptValue WebPuppeteerTab::findFirst(const QString &selector) {
+	QWebElement el = page->mainFrame()->findFirstElement(selector);
+	if (el.isNull()) return parent->engine().nullValue();
+	return parent->engine().newQObject(new WebPuppeteerWebElement(el));
+}
+
+QString WebPuppeteerTab::treeDump() {
+	return page->mainFrame()->renderTreeDump();
 }
 

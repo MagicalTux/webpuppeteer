@@ -9,5 +9,5 @@ INCLUDEPATH += .
 QT += script webkit
 
 # Input
-HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp
-SOURCES += main.cpp WebPuppeteer.cpp WebPuppeteerSys.cpp WebPuppeteerTab.cpp
+HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp WebPuppeteerWebElement.hpp
+SOURCES += main.cpp WebPuppeteer.cpp WebPuppeteerSys.cpp WebPuppeteerTab.cpp WebPuppeteerWebElement.cpp
