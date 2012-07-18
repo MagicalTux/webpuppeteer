@@ -2,10 +2,10 @@
 
 class WebPuppeteer;
 
-class WebPuppeteerConsole: public QObject {
+class WebPuppeteerSys: public QObject {
 	Q_OBJECT;
 public:
-	WebPuppeteerConsole(WebPuppeteer *parent);
+	WebPuppeteerSys(WebPuppeteer *parent);
 
 public slots:
 	void log(QString msg);

@@ -2,12 +2,16 @@
 #include <QFile>
 #include <QScriptEngine>
 #include "WebPuppeteer.hpp"
-#include "WebPuppeteerConsole.hpp"
+#include "WebPuppeteerSys.hpp"
 
 WebPuppeteer::WebPuppeteer(QString _file) {
 	file = _file;
 	exit_code = 0;
-	console = new WebPuppeteerConsole(this);
+	sys = new WebPuppeteerSys(this);
+
+	QScriptValue val_sys = e.newQObject(sys, QScriptEngine::QtOwnership, QScriptEngine::ExcludeChildObjects | QScriptEngine::ExcludeDeleteLater);
+	e.globalObject().setProperty("sys", val_sys);
+	e.globalObject().setProperty("console", val_sys);
 }
 
 void WebPuppeteer::start() {
@@ -24,8 +28,6 @@ void WebPuppeteer::start() {
 		return;
 	}
 
-	QScriptEngine e;
-	e.globalObject().setProperty("console", e.newQObject(console, QScriptEngine::QtOwnership, QScriptEngine::ExcludeChildObjects | QScriptEngine::ExcludeDeleteLater));
 	QScriptValue res = e.evaluate(QString::fromUtf8(f.readAll()), file);
 
 	if (res.isError()) {

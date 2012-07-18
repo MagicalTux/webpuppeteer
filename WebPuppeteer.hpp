@@ -1,6 +1,7 @@
 #include <QObject>
+#include <QScriptEngine>
 
-class WebPuppeteerConsole;
+class WebPuppeteerSys;
 
 class WebPuppeteer: public QObject {
 	Q_OBJECT;
@@ -14,6 +15,7 @@ private:
 	QString file;
 	int exit_code;
 
-	WebPuppeteerConsole *console;
+	WebPuppeteerSys *sys;
+	QScriptEngine e;
 };
 
