@@ -3,25 +3,14 @@
 
 console.log("Loading google.com...");
 tab = sys.newTab();
-tab.browse("http://www.google.com/");
+tab.browse("http://www.google.com/ncr");
 console.log("loaded, messing with the page");
 
-tab.eval("document.getElementsByName(\"q\")[0].value = \"Real men input their search here!\"");
-console.log("current search value: "+tab.eval("document.getElementsByName(\"q\")[0].value"));
+tab.type("cats");
+tab.typeEnter();
+tab.wait();
 
-// get all inputs
-console.log("Listing all input tags:");
-inputs = tab.findAll("input");
-for(var i=0; i<inputs.length; i++) {
-	inputs[i].setStyleProperty("color", "red !important");
-	console.log("input: "+inputs[i].xml());
-}
+tab.click("Images");
 
-console.log("showing page to user and allowing interaction");
 tab.interact();
-
-console.log("taking screenshot");
-
-tab.screenshot("google.png");
-tab.print("google.pdf");
 
