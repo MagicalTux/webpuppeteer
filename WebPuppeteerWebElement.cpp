@@ -15,6 +15,10 @@ void WebPuppeteerWebElement::setAttribute(const QString &name, const QString &va
 	e.setAttribute(name, value);
 }
 
+bool WebPuppeteerWebElement::hasAttribute(const QString &name) {
+	return e.hasAttribute(name);
+}
+
 QString WebPuppeteerWebElement::xml() {
 	return e.toOuterXml();
 }

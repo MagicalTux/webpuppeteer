@@ -12,6 +12,7 @@ public:
 public slots:
 	QString attribute(const QString &name);
 	void setAttribute(const QString &name, const QString &value);
+	bool hasAttribute(const QString &name);
 	QString xml(); // return element as xml
 	void eval(const QString &js);
 	bool click();
