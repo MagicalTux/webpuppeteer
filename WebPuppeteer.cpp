@@ -44,3 +44,8 @@ QScriptEngine &WebPuppeteer::engine() {
 	return e;
 }
 
+void WebPuppeteer::exit(int code) {
+	exit_code = code;
+	e.abortEvaluation();
+}
+

@@ -43,3 +43,11 @@ QScriptValue WebPuppeteerSys::get(const QString &url) {
 	return parent->engine().newVariant((rep->readAll()));
 }
 
+void WebPuppeteerSys::quit() {
+	parent->exit(0);
+}
+
+void WebPuppeteerSys::abort() {
+	parent->exit(1);
+}
+

@@ -11,6 +11,7 @@ public:
 
 public slots:
 	void start();
+	void exit(int code);
 
 private:
 	QString file;

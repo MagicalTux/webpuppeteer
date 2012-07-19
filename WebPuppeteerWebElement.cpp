@@ -46,6 +46,24 @@ QScriptValue WebPuppeteerWebElement::findAll(const QString &selector) {
 	return res;
 }
 
+QScriptValue WebPuppeteerWebElement::parentNode() {
+	QWebElement el = e.parent();
+	if (el.isNull()) return parent->getParent()->engine().nullValue();
+	return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership);
+}
+
+QScriptValue WebPuppeteerWebElement::firstChild() {
+	QWebElement el = e.firstChild();
+	if (el.isNull()) return parent->getParent()->engine().nullValue();
+	return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership);
+}
+
+QScriptValue WebPuppeteerWebElement::nextSibling() {
+	QWebElement el = e.nextSibling();
+	if (el.isNull()) return parent->getParent()->engine().nullValue();
+	return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership);
+}
+
 bool WebPuppeteerWebElement::click() {
 	return e.evaluateJavaScript("(function(obj) { var e = document.createEvent('MouseEvents'); e.initEvent('click',true,false); return obj.dispatchEvent(e); })(this)").toBool();
 }
@@ -132,5 +150,9 @@ QList<QWebElement> WebPuppeteerWebElement::allChildren() {
 	}
 
 	return res;
+}
+
+QString WebPuppeteerWebElement::tagName() {
+	return e.tagName();
 }
 

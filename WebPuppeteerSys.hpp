@@ -16,6 +16,9 @@ public slots:
 	QScriptValue get(const QString &url);
 	QScriptValue newTab();
 
+	void quit();
+	void abort();
+
 private:
 	WebPuppeteer *parent;
 	QNetworkAccessManager net;

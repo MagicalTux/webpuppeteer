@@ -20,11 +20,17 @@ public slots:
 	void setStyleProperty(const QString &name, const QString &value);
 	QString getComputedStyle(const QString &name);
 
+	// details
+	QString tagName();
+
 	// fidning elements
 	QScriptValue findFirst(const QString &selector);
 	QScriptValue findAll(const QString &selector);
 	QScriptValue findAllContaining(const QString &text);
 	QScriptValue getElementById(const QString &id);
+	QScriptValue parentNode();
+	QScriptValue firstChild();
+	QScriptValue nextSibling();
 
 private:
 	QWebElement e;
