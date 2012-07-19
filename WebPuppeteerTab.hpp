@@ -1,11 +1,10 @@
-#include <QObject>
 #include <QWebPage>
 #include <QScriptValue>
 #include <QWebElement>
 
 class WebPuppeteer;
 
-class WebPuppeteerTab: public QObject {
+class WebPuppeteerTab: public QWebPage {
 	Q_OBJECT;
 public:
 	WebPuppeteerTab(WebPuppeteer *parent);
@@ -32,7 +31,6 @@ public slots:
 	void downloadFile(QNetworkReply*);
 
 private:
-	QWebPage *page;
 	bool return_bool;
 	WebPuppeteer *parent;
 };
