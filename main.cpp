@@ -22,6 +22,8 @@ int main(int argc, char *argv[]) {
 
 	app.setQuitOnLastWindowClosed(false);
 
+	qDebug("Running on Qt %s", qVersion());
+
 	return app.exec();
 }
 
