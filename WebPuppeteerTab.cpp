@@ -22,6 +22,86 @@ WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
 
 	connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
+	connect(networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,const QList<QSslError>&)), this, SLOT(handleSslErrors(QNetworkReply*,const QList<QSslError>&)));
+}
+
+void WebPuppeteerTab::trustCertificate(const QString &hash) {
+	trusted_certificates.insert(QByteArray::fromHex(hash.toLatin1()));
+}
+
+void WebPuppeteerTab::handleSslErrors(QNetworkReply *reply,const QList<QSslError>&list) {
+	bool ignore_ok = true;
+
+	for(int i = 0; i < list.size(); i++) {
+		bool this_ignore_ok = false;
+		switch(list.at(i).error()) {
+			case QSslError::UnableToGetLocalIssuerCertificate:
+			case QSslError::CertificateUntrusted:
+			{
+				QByteArray hash = list.at(i).certificate().digest(QCryptographicHash::Sha1);
+				if (trusted_certificates.contains(hash)) {
+					this_ignore_ok = true;
+				} else {
+					qDebug("The following error could be ignored by calling tab.trustCertificate(\"%s\")", hash.toHex().data());
+				}
+			}
+			default: break;
+		}
+
+		if (!this_ignore_ok) {
+			qDebug("SSL Error: %d %s", list.at(i).error(), qPrintable(list.at(i).errorString()));
+			ignore_ok = false;
+		}
+	}
+
+	if (ignore_ok)
+		reply->ignoreSslErrors();
+}
+
+bool WebPuppeteerTab::shouldInterruptJavaScript() {
+	return true;
+}
+
+void WebPuppeteerTab::javaScriptAlert(QWebFrame*, const QString &msg) {
+	qDebug("Got javascript alert: %s", qPrintable(msg));
+}
+
+bool WebPuppeteerTab::supportsExtension(Extension e) {
+	switch(e) {
+		case QWebPage::ChooseMultipleFilesExtension: return true;
+		case QWebPage::ErrorPageExtension: return true;
+		default: return false;
+	}
+}
+
+bool WebPuppeteerTab::extension(Extension e, ExtensionOption *option, ExtensionReturn *output) {
+	switch(e) {
+		case QWebPage::ChooseMultipleFilesExtension:
+		{
+			if (output == NULL) return false;
+			//ChooseMultipleFilesExtensionReturn *ret = (ChooseMultipleFilesExtensionReturn*)output;
+
+			// TODO
+			
+			return true;
+		}
+		case QWebPage::ErrorPageExtension:
+		{
+			ErrorPageExtensionOption *opt = (ErrorPageExtensionOption*)option;
+			ErrorPageExtensionReturn *ret = (ErrorPageExtensionReturn*)output;
+
+			qDebug("HTTP error %d: %s", opt->error, qPrintable(opt->errorString));
+			if (ret != 0) {
+				ret->baseUrl = QUrl("http://localhost/");
+				ret->contentType = "text/html";
+				ret->encoding = "UTF-8";
+				ret->content = "<h1>Load error</h1><p>Could not load page :(</p>";
+			}
+			return true;
+		}
+		default:
+			return false;
+	}
 }
 
 void WebPuppeteerTab::downloadFile(QNetworkReply*reply) {
