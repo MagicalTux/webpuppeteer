@@ -24,6 +24,7 @@ public slots:
 	QScriptValue findFirst(const QString &selector);
 	QScriptValue findAll(const QString &selector);
 	QScriptValue findAllContaining(const QString &text);
+	QScriptValue getElementById(const QString &id);
 
 private:
 	QWebElement e;

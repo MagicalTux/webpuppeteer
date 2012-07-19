@@ -11,6 +11,7 @@ tab.typeEnter();
 tab.wait();
 
 tab.document().findAllContaining("Images")[0].click();
+tab.wait();
 
 tab.interact();
 

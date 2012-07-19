@@ -82,7 +82,7 @@ QScriptValue WebPuppeteerTab::eval(const QString &js) {
 }
 
 QScriptValue WebPuppeteerTab::document() {
-	return parent->engine().newQObject(new WebPuppeteerWebElement(this, page->mainFrame()->documentElement()));
+	return parent->engine().newQObject(new WebPuppeteerWebElement(this, page->mainFrame()->documentElement()), QScriptEngine::ScriptOwnership);
 }
 
 QString WebPuppeteerTab::treeDump() {

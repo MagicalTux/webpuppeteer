@@ -34,14 +34,14 @@ QString WebPuppeteerWebElement::getComputedStyle(const QString &name) {
 QScriptValue WebPuppeteerWebElement::findFirst(const QString &selector) {
 	QWebElement el = e.findFirst(selector);
 	if (el.isNull()) return parent->getParent()->engine().nullValue();
-	return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el));
+	return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership);
 }
 
 QScriptValue WebPuppeteerWebElement::findAll(const QString &selector) {
 	QScriptValue res = parent->getParent()->engine().newArray();
 	QWebElementCollection c = e.findAll(selector);
 	for(int i = 0; i < c.count(); i++) {
-		res.setProperty(i, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, c.at(i))));
+		res.setProperty(i, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, c.at(i)), QScriptEngine::ScriptOwnership));
 	}
 	return res;
 }
@@ -74,11 +74,25 @@ QScriptValue WebPuppeteerWebElement::findAllContaining(const QString &text) {
 		}
 
 		if ((check) && (str.contains(text, Qt::CaseInsensitive))) {
-			res.setProperty(res_pos++, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el)));
+			res.setProperty(res_pos++, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership));
 		}
 	}
 
 	return res;
+}
+
+QScriptValue WebPuppeteerWebElement::getElementById(const QString &id) {
+	QList<QWebElement> c = allChildren();
+
+	for(int i = 0; i < c.size(); i++) {
+		QWebElement el = c.at(i);
+		if (!el.hasAttribute("id")) continue;
+
+		if (el.attribute("id") == id) {
+			return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership);
+		}
+	}
+	return parent->getParent()->engine().nullValue();
 }
 
 QList<QWebElement> WebPuppeteerWebElement::allChildren() {
