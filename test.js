@@ -10,7 +10,7 @@ tab.type("cats");
 tab.typeEnter();
 tab.wait();
 
-tab.click("Images");
+tab.document().findAllContaining("Images")[0].click();
 
 tab.interact();
 

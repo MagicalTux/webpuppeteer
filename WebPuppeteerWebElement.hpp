@@ -14,6 +14,7 @@ public slots:
 	void setAttribute(const QString &name, const QString &value);
 	QString xml(); // return element as xml
 	void eval(const QString &js);
+	bool click();
 
 	// CSS
 	void setStyleProperty(const QString &name, const QString &value);
@@ -22,9 +23,12 @@ public slots:
 	// fidning elements
 	QScriptValue findFirst(const QString &selector);
 	QScriptValue findAll(const QString &selector);
+	QScriptValue findAllContaining(const QString &text);
 
 private:
 	QWebElement e;
 	WebPuppeteerTab *parent;
+
+	QList<QWebElement> allChildren();
 };
 

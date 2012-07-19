@@ -25,7 +25,6 @@ public slots:
 	bool wait(); // wait for page to finish loading
 	void type(const QString &text);
 	void typeEnter();
-	bool click(const QString &text); // click at first occurence of text
 
 	// for internal use
 	void setReturnBool(bool);

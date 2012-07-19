@@ -71,14 +71,6 @@ Outputs current page as PDF.
 
 Execute javascript code in the page.
 
-### findFirst(selectorQuery)
-
-Locate first element matching the CSS2 selector passed as argument.
-
-### findAll(selectorQuery)
-
-Locate all elements matching the CSS2 selector passed as argument.
-
 ### document()
 
 Returns the document element.
@@ -90,4 +82,16 @@ Dump webkit's internal rendering tree.
 ### interact()
 
 Opens the page in a window, and give the user opportunity to interact with the page.
+
+## WebPuppeteerWebElement
+
+This class represents one element inside the page. It acts in a similar way to DOM.
+
+### findFirst(selectorQuery)
+
+Locate first element matching the CSS2 selector passed as argument.
+
+### findAll(selectorQuery)
+
+Locate all elements matching the CSS2 selector passed as argument.
 
