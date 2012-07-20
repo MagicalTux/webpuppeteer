@@ -144,3 +144,14 @@ bool WebPuppeteerSys::filePutContents(QString filename, QString data) {
 	return true;
 }
 
+QScriptValue WebPuppeteerSys::include(QString filename) {
+	QFile f(filename);
+	if (!f.exists()) {
+		return parent->engine().currentContext()->throwError(QScriptContext::RangeError, "Include file not found");
+	}
+	if (!f.open(QIODevice::ReadOnly)) {
+		return parent->engine().currentContext()->throwError(QScriptContext::UnknownError, "Could not open file for reading");
+	}
+	return parent->engine().evaluate(QString::fromUtf8(f.readAll()), filename);
+}
+
