@@ -56,15 +56,23 @@ QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post
 	}
 	last_once = once;
 
-	QByteArray data_post = post.toUtf8();
+	QByteArray data_post;
+	if (post == "") {
+		data_post = (post + QString("nonce=%1").arg(once)).toUtf8();
+	} else {
+		data_post = (post + QString("&nonce=%1").arg(once)).toUtf8();
+	}
+
 
 	QNetworkRequest req(url);
+	req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 	req.setRawHeader("Rest-Key", api_key.toLatin1());
 
 	// quick implementation of SHA512 hmac
 	SHA512_CTX ctx;
 	quint8 sha512[SHA512_DIGEST_LENGTH];
 	QByteArray bin_api_secret(QByteArray::fromBase64(api_secret.toLatin1()));
+
 	if (bin_api_secret.size() > SHA512_BLOCK_LENGTH) {
 		SHA512_Init(&ctx);
 		SHA512_Update(&ctx, (quint8*)bin_api_secret.data(), bin_api_secret.size());
@@ -96,7 +104,7 @@ QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post
 	SHA512_Final(sha512, &ctx);
 	bin_api_secret = QByteArray((char*)&sha512, SHA512_DIGEST_LENGTH);
 
-	req.setRawHeader("Rest-Sign", bin_api_secret.toHex());
+	req.setRawHeader("Rest-Sign", bin_api_secret.toBase64());
 
 	QNetworkReply *rep = net.post(req, data_post);
 	QEventLoop e;
