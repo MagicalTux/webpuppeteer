@@ -88,7 +88,7 @@ QScriptValue WebPuppeteerWebElement::findAllContaining(const QString &text) {
 			str = el.toPlainText();
 			check = true;
 		} else if (el.tagName() == "BUTTON") {
-			str = el.toPlainText();
+			str = el.attribute("Value")+el.toPlainText();
 			check = true;
 		} else if ((el.tagName() == "INPUT") && (el.attribute("type").toLower() == "submit")) {
 			str = el.attribute("value");
@@ -115,6 +115,43 @@ QScriptValue WebPuppeteerWebElement::getElementById(const QString &id) {
 		}
 	}
 	return parent->getParent()->engine().nullValue();
+}
+
+QScriptValue WebPuppeteerWebElement::getElementsByTagName(const QString &tag) {
+	QList<QWebElement> c = allChildren();
+
+	QScriptValue res = parent->getParent()->engine().newArray();
+	int res_pos = 0;
+
+	QString real_tag = tag.toUpper();
+
+	for(int i = 0; i < c.size(); i++) {
+		QWebElement el = c.at(i);
+
+		if (el.tagName() != real_tag) continue;
+		res.setProperty(res_pos++, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership));
+	}
+
+	return res;
+}
+QScriptValue WebPuppeteerWebElement::getElementsByName(const QString &name) {
+	QList<QWebElement> c = allChildren();
+
+	QScriptValue res = parent->getParent()->engine().newArray();
+	int res_pos = 0;
+
+	for(int i = 0; i < c.size(); i++) {
+		QWebElement el = c.at(i);
+
+		if (el.attribute("name") != name) continue;
+		res.setProperty(res_pos++, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership));
+	}
+
+	return res;
+}
+
+QString WebPuppeteerWebElement::textContent() {
+	return e.toPlainText();
 }
 
 QList<QWebElement> WebPuppeteerWebElement::allChildren() {
@@ -158,5 +195,13 @@ QList<QWebElement> WebPuppeteerWebElement::allChildren() {
 
 QString WebPuppeteerWebElement::tagName() {
 	return e.tagName();
+}
+
+void WebPuppeteerWebElement::setFocus() {
+	e.setFocus();
+}
+
+bool WebPuppeteerWebElement::hasFocus() {
+	return e.hasFocus();
 }
 

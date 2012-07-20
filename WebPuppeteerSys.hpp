@@ -15,6 +15,7 @@ public slots:
 	void sleep(int msecs);
 	QScriptValue get(const QString &url);
 	QScriptValue newTab();
+	bool filePutContents(QString filename, QString data);
 
 	void quit();
 	void abort();

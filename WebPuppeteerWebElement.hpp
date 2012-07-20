@@ -14,6 +14,7 @@ public slots:
 	void setAttribute(const QString &name, const QString &value);
 	bool hasAttribute(const QString &name);
 	QString xml(); // return element as xml
+	QString textContent();
 	void eval(const QString &js);
 	bool click();
 
@@ -29,9 +30,15 @@ public slots:
 	QScriptValue findAll(const QString &selector);
 	QScriptValue findAllContaining(const QString &text);
 	QScriptValue getElementById(const QString &id);
+	QScriptValue getElementsByTagName(const QString &tag);
+	QScriptValue getElementsByName(const QString &name);
 	QScriptValue parentNode();
 	QScriptValue firstChild();
 	QScriptValue nextSibling();
+
+	// focus
+	void setFocus();
+	bool hasFocus();
 
 private:
 	QWebElement e;

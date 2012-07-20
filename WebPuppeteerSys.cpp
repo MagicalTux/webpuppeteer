@@ -4,6 +4,7 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QNetworkReply>
+#include <QFile>
 
 WebPuppeteerSys::WebPuppeteerSys(WebPuppeteer *_parent): QObject(_parent) {
 	parent = _parent;
@@ -49,5 +50,13 @@ void WebPuppeteerSys::quit() {
 
 void WebPuppeteerSys::abort() {
 	parent->exit(1);
+}
+
+bool WebPuppeteerSys::filePutContents(QString filename, QString data) {
+	QFile f(filename);
+	if (!f.open(QIODevice::WriteOnly)) return false;
+	f.write(data.toUtf8());
+	f.close();
+	return true;
 }
 

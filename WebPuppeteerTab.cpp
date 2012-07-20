@@ -9,6 +9,8 @@
 #include <QNetworkReply>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QTimer>
+#include <QTemporaryFile>
 
 WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	parent = _parent;
@@ -105,17 +107,45 @@ bool WebPuppeteerTab::extension(Extension e, ExtensionOption *option, ExtensionR
 }
 
 void WebPuppeteerTab::downloadFile(QNetworkReply*reply) {
-	// test stuff
-	qDebug("finished: %s", reply->isFinished() ? "yes":"no");
+	// Won't be finished at this point, need to connect() to reply signals to detect end of download
+	// Just in case, check if reply->isFinished()
+	if (reply->isFinished()) {
+		downloadFileFinished(reply);
+	}
+	connect(reply, SIGNAL(finished()), this, SLOT(downloadFileFinished()));
+}
+
+void WebPuppeteerTab::downloadFileFinished(QNetworkReply*reply) {
+	if (reply == NULL)
+		reply = qobject_cast<QNetworkReply*>(sender());
+
+	qDebug("reply received (file downloaded)");
 }
 
 WebPuppeteer *WebPuppeteerTab::getParent() {
 	return parent;
 }
 
-bool WebPuppeteerTab::browse(const QString &url) {
+bool WebPuppeteerTab::load(const QString &url, int timeout) {
 	mainFrame()->load(QUrl(url));
-	return wait();
+	return wait(timeout);
+}
+
+bool WebPuppeteerTab::browse(const QString &url, int timeout) {
+	mainFrame()->load(mainFrame()->url().resolved(QUrl(url)));
+	return wait(timeout);
+}
+
+void WebPuppeteerTab::back() {
+	triggerAction(QWebPage::Back);
+}
+
+void WebPuppeteerTab::reload(bool force_no_cache) {
+	if (force_no_cache) {
+		triggerAction(QWebPage::ReloadAndBypassCache);
+	} else {
+		triggerAction(QWebPage::Reload);
+	}
 }
 
 void WebPuppeteerTab::setReturnBool(bool r) {
@@ -154,6 +184,15 @@ bool WebPuppeteerTab::print(const QString &filename) {
 //	print_p.end();
 	mainFrame()->print(&print);
 	return true;
+}
+
+QString WebPuppeteerTab::printBase64() {
+	QTemporaryFile t;
+	if (!t.open()) return QString();
+	if (!print(t.fileName())) return QString();
+	QByteArray data = t.readAll();
+	t.remove();
+	return QString::fromLatin1(data.toBase64());
 }
 
 QScriptValue WebPuppeteerTab::eval(const QString &js) {
@@ -196,11 +235,15 @@ QScriptValue WebPuppeteerTab::get(const QString &url) {
 	return parent->engine().newVariant((rep->readAll()));
 }
 
-bool WebPuppeteerTab::wait() {
+bool WebPuppeteerTab::wait(int timeout) {
 	QEventLoop e;
 
 	connect(this, SIGNAL(loadFinished(bool)), &e, SLOT(quit()));
 	connect(this, SIGNAL(loadFinished(bool)), this, SLOT(setReturnBool(bool)));
+	if (timeout > 0)
+		QTimer::singleShot(timeout*1000, &e, SLOT(quit()));
+	return_bool = false;
+
 	e.exec();
 
 	return return_bool;
@@ -214,5 +257,9 @@ void WebPuppeteerTab::type(const QString &text) {
 void WebPuppeteerTab::typeEnter() {
 	QKeyEvent ev(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
 	event(&ev);
+}
+
+QString WebPuppeteerTab::getHtml() {
+	return mainFrame()->toHtml();
 }
 
