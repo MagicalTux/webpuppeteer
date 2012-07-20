@@ -130,6 +130,12 @@ void WebPuppeteerSys::abort() {
 	parent->exit(1);
 }
 
+QScriptValue WebPuppeteerSys::fileGetContents(QString filename) {
+	QFile f(filename);
+	if (!f.open(QIODevice::ReadOnly)) return parent->engine().nullValue();
+	return parent->engine().newVariant(f.readAll());
+}
+
 bool WebPuppeteerSys::filePutContents(QString filename, QString data) {
 	QFile f(filename);
 	if (!f.open(QIODevice::WriteOnly)) return false;

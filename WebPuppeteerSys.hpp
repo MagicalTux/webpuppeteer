@@ -16,6 +16,7 @@ public slots:
 	QScriptValue get(const QString &url);
 	QScriptValue signedPost(const QString &url, const QString &post, const QString &api_key, const QString &api_secret);
 	QScriptValue newTab();
+	QScriptValue fileGetContents(QString filename);
 	bool filePutContents(QString filename, QString data);
 
 	void quit();
