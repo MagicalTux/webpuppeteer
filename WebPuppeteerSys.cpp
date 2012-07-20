@@ -130,10 +130,10 @@ void WebPuppeteerSys::abort() {
 	parent->exit(1);
 }
 
-QScriptValue WebPuppeteerSys::fileGetContents(QString filename) {
+QString WebPuppeteerSys::fileGetContents(QString filename) {
 	QFile f(filename);
-	if (!f.open(QIODevice::ReadOnly)) return parent->engine().nullValue();
-	return parent->engine().newVariant(f.readAll());
+	if (!f.open(QIODevice::ReadOnly)) return QString();
+	return QString::fromUtf8(f.readAll());
 }
 
 bool WebPuppeteerSys::filePutContents(QString filename, QString data) {
