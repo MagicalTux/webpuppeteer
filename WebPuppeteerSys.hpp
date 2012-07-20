@@ -14,6 +14,7 @@ public slots:
 	void log(const QString &msg);
 	void sleep(int msecs);
 	QScriptValue get(const QString &url);
+	QScriptValue signedPost(const QString &url, const QString &post, const QString &api_key, const QString &api_secret);
 	QScriptValue newTab();
 	bool filePutContents(QString filename, QString data);
 
