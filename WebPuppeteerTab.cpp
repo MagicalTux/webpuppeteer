@@ -19,10 +19,6 @@ WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	setViewportSize(QSize(1024,768));
 	setForwardUnsupportedContent(true);
 
-	// disable scrollbars, not as anyone is going to use them anyway
-	mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
-	mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
-
 	connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
 	connect(networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,const QList<QSslError>&)), this, SLOT(handleSslErrors(QNetworkReply*,const QList<QSslError>&)));
 }
@@ -165,18 +161,34 @@ void WebPuppeteerTab::setReturnBool(bool r) {
 }
 
 bool WebPuppeteerTab::screenshot(const QString &filename) {
+	// disable scrollbars, not as anyone is going to use them anyway
+	mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+	mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+
 	QImage img(viewportSize(), QImage::Format_RGB32);
 	QPainter paint(&img);
 	mainFrame()->render(&paint);
 	paint.end();
+
+	mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+	mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+
 	return img.save(filename);
 }
 
 bool WebPuppeteerTab::fullshot(const QString &filename) {
+	// disable scrollbars, not as anyone is going to use them anyway
+	mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAlwaysOff);
+	mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOff);
+
 	QImage img(mainFrame()->contentsSize(), QImage::Format_RGB32);
 	QPainter paint(&img);
 	mainFrame()->render(&paint);
 	paint.end();
+
+	mainFrame()->setScrollBarPolicy(Qt::Horizontal, Qt::ScrollBarAsNeeded);
+	mainFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAsNeeded);
+
 	return img.save(filename);
 }
 
