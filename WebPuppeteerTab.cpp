@@ -27,6 +27,18 @@ WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	connect(networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,const QList<QSslError>&)), this, SLOT(handleSslErrors(QNetworkReply*,const QList<QSslError>&)));
 }
 
+QWebPage *WebPuppeteerTab::createWindow(WebWindowType) {
+	// we don't care about the type, since modal has no meaning here
+	WebPuppeteerTab *tab = new WebPuppeteerTab(parent);
+	queue.append(tab);
+	return tab;
+}
+
+QScriptValue WebPuppeteerTab::getNewWindow() {
+	if (queue.size() == 0) return parent->engine().nullValue();
+	return parent->engine().newQObject(queue.takeFirst(), QScriptEngine::ScriptOwnership);
+}
+
 void WebPuppeteerTab::trustCertificate(const QString &hash) {
 	trusted_certificates.insert(QByteArray::fromHex(hash.toLatin1()));
 }
@@ -256,6 +268,11 @@ void WebPuppeteerTab::type(const QString &text) {
 
 void WebPuppeteerTab::typeEnter() {
 	QKeyEvent ev(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
+	event(&ev);
+}
+
+void WebPuppeteerTab::typeTab() {
+	QKeyEvent ev(QEvent::KeyPress, Qt::Key_Tab, Qt::NoModifier);
 	event(&ev);
 }
 

@@ -14,6 +14,7 @@ WebPuppeteer::WebPuppeteer(QString _file) {
 	QScriptValue val_sys = e.newQObject(sys, QScriptEngine::QtOwnership, QScriptEngine::ExcludeChildObjects | QScriptEngine::ExcludeSuperClassContents);
 	e.globalObject().setProperty("sys", val_sys);
 	e.globalObject().setProperty("console", val_sys);
+	e.globalObject().setProperty("global", e.globalObject());
 }
 
 void WebPuppeteer::start() {

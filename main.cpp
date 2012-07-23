@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QTimer>
 #include <QStringList>
+#include <QWebSettings>
 #include "WebPuppeteer.hpp"
 
 int main(int argc, char *argv[]) {
@@ -14,6 +15,9 @@ int main(int argc, char *argv[]) {
 	} else {
 		file = "test.js";
 	}
+
+	QWebSettings::globalSettings()->setAttribute(QWebSettings::JavascriptCanOpenWindows, true);
+	QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
 
 	WebPuppeteer wp(file);
 	

@@ -23,6 +23,7 @@ public slots:
 	void back(); // go back
 	void reload(bool force_no_cache = false);
 	bool wait(int timeout = 60); // wait for page to finish loading
+	QScriptValue getNewWindow(); // get latest opened window
 
 	// screenshot / print
 	bool screenshot(const QString &filename); // take screenshot at url
@@ -40,6 +41,7 @@ public slots:
 	QScriptValue get(const QString &url);
 	void type(const QString &text);
 	void typeEnter();
+	void typeTab();
 
 	QString getHtml(); // return html
 
@@ -55,11 +57,13 @@ public slots:
 
 protected:
 	virtual void javaScriptAlert(QWebFrame*, const QString &msg);
+	virtual QWebPage *createWindow(WebWindowType type);
 
 private:
 	bool return_bool;
 	WebPuppeteer *parent;
 
 	QSet<QByteArray> trusted_certificates;
+	QList<WebPuppeteerTab*> queue;
 };
 
