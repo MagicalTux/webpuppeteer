@@ -159,6 +159,13 @@ bool WebPuppeteerTab::load(const QString &url, int timeout) {
 	return wait(timeout);
 }
 
+bool WebPuppeteerTab::post(const QString &url, const QString &post, const QString content_type, int timeout) {
+	QNetworkRequest req(url);
+	req.setHeader(QNetworkRequest::ContentTypeHeader, content_type);
+	mainFrame()->load(req, QNetworkAccessManager::PostOperation, post.toUtf8());
+	return wait(timeout);
+}
+
 bool WebPuppeteerTab::browse(const QString &url, int timeout) {
 	mainFrame()->load(mainFrame()->url().resolved(QUrl(url)));
 	return wait(timeout);

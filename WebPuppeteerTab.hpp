@@ -20,6 +20,7 @@ public slots:
 	// navigation
 	bool load(const QString &url, int timeout = 60); // go to given url
 	bool browse(const QString &url, int timeout = 60); // browse to given url
+	bool post(const QString &url, const QString &post, const QString content_type="application/x-www-form-urlencoded", int timeout=60);
 	void back(); // go back
 	void reload(bool force_no_cache = false);
 	bool wait(int timeout = 60); // wait for page to finish loading
