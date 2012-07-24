@@ -20,6 +20,8 @@ public slots:
 	bool filePutContents(QString filename, QString data);
 	bool filePutContentsB64(QString filename, QString data);
 	QScriptValue include(QString filename); // include a file
+	void alert(QString string);
+	QString exec(QString str);
 
 	void quit();
 	void abort();

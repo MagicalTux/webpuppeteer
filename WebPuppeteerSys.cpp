@@ -6,6 +6,8 @@
 #include <QNetworkReply>
 #include <QDateTime>
 #include <QFile>
+#include <QMessageBox>
+#include <QProcess>
 #include "sha2.h"
 
 WebPuppeteerSys::WebPuppeteerSys(WebPuppeteer *_parent): QObject(_parent) {
@@ -122,6 +124,10 @@ QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post
 	return parent->engine().newVariant((rep->readAll()));
 }
 
+void WebPuppeteerSys::alert(QString string) {
+	QMessageBox::information(NULL, "WebPuppeteer alert", string);
+}
+
 void WebPuppeteerSys::quit() {
 	parent->exit(0);
 }
@@ -161,5 +167,12 @@ QScriptValue WebPuppeteerSys::include(QString filename) {
 		return parent->engine().currentContext()->throwError(QScriptContext::UnknownError, "Could not open file for reading");
 	}
 	return parent->engine().evaluate(QString::fromUtf8(f.readAll()), filename);
+}
+
+QString exec(QString str) {
+	QProcess p;
+	p.start(str);
+	p.waitForFinished();
+	return QString::fromUtf8(p.readAll());
 }
 
