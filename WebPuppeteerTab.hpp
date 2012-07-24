@@ -25,6 +25,9 @@ public slots:
 	bool wait(int timeout = 60); // wait for page to finish loading
 	QScriptValue getNewWindow(); // get latest opened window
 
+	// download
+	QScriptValue getDownloadedFile(); // get one downloaded file
+
 	// screenshot / print
 	bool screenshot(const QString &filename); // take screenshot at url
 	bool fullshot(const QString &filename); // take full-size screenshot at url
@@ -65,5 +68,6 @@ private:
 
 	QSet<QByteArray> trusted_certificates;
 	QList<WebPuppeteerTab*> queue;
+	QList<QScriptValue> file_queue;
 };
 

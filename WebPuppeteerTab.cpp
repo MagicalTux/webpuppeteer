@@ -128,7 +128,26 @@ void WebPuppeteerTab::downloadFileFinished(QNetworkReply*reply) {
 	if (reply == NULL)
 		reply = qobject_cast<QNetworkReply*>(sender());
 
-	qDebug("reply received (file downloaded)");
+	if (reply->error() != QNetworkReply::NoError) {
+		qDebug("error downloading file: %d", reply->error());
+		return;
+	}
+	QString filename = reply->request().url().path();
+	int idx = filename.lastIndexOf('/');
+	if (idx != -1) filename = filename.mid(idx+1);
+
+	QScriptValue arr = parent->engine().newObject();
+	arr.setProperty("filename", filename);
+	arr.setProperty("filedata", QString::fromLatin1(reply->readAll().toBase64()));
+
+	file_queue.append(arr);
+
+	qDebug("File download success: %s", qPrintable(filename));
+}
+
+QScriptValue WebPuppeteerTab::getDownloadedFile() {
+	if (file_queue.isEmpty()) return parent->engine().nullValue();
+	return file_queue.takeFirst();
 }
 
 WebPuppeteer *WebPuppeteerTab::getParent() {
