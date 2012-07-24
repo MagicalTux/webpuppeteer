@@ -169,7 +169,7 @@ QScriptValue WebPuppeteerSys::include(QString filename) {
 	return parent->engine().evaluate(QString::fromUtf8(f.readAll()), filename);
 }
 
-QString exec(QString str) {
+QString WebPuppeteerSys::exec(QString str) {
 	QProcess p;
 	p.start(str);
 	p.waitForFinished();
