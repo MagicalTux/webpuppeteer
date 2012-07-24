@@ -47,6 +47,7 @@ void WebPuppeteerTab::handleSslErrors(QNetworkReply *reply,const QList<QSslError
 		switch(list.at(i).error()) {
 			case QSslError::UnableToGetLocalIssuerCertificate:
 			case QSslError::CertificateUntrusted:
+			case QSslError::UnableToVerifyFirstCertificate:
 			{
 				QByteArray hash = list.at(i).certificate().digest(QCryptographicHash::Sha1);
 				if (trusted_certificates.contains(hash)) {
