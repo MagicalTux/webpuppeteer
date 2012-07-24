@@ -144,6 +144,14 @@ bool WebPuppeteerSys::filePutContents(QString filename, QString data) {
 	return true;
 }
 
+bool WebPuppeteerSys::filePutContentsB64(QString filename, QString data) {
+	QFile f(filename);
+	if (!f.open(QIODevice::WriteOnly)) return false;
+	f.write(QByteArray::fromBase64(data.toLatin1()));
+	f.close();
+	return true;
+}
+
 QScriptValue WebPuppeteerSys::include(QString filename) {
 	QFile f(filename);
 	if (!f.exists()) {
