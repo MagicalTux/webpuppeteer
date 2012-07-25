@@ -40,10 +40,8 @@ var table = tab.document().textContent();
 table = table.substring(table.indexOf("RET_VALUE=") + 10).split(",");
 
 tab.post("https://e-biz.smbc.co.jp/core/exec/servlet/ACH99OMCL_WEBCNTL", "User="+valuedoor_id+"&Pwd1="+web21_encode_password(table, valuedoor_password)+"&hid1=&UkeID=ACHE9H001&APNextScrID=ACH999002&pickTable="+web21_picktable(table)+"&_W_SoftKeyBoardFlag=1");
+
+tab.document().findAllContaining("Global e-Trade サービス")[0].click();
+tab.wait();
+
 tab.interact();
-
-sys.quit();
-
-tab.load("https://e-biz.smbc.co.jp/core/index.html");
-tab.interact();
-
