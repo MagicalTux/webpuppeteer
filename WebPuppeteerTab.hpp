@@ -67,7 +67,7 @@ public slots:
 protected:
 	virtual void javaScriptAlert(QWebFrame*, const QString &msg);
 	virtual QWebPage *createWindow(WebWindowType type);
-	virtual QString userAgentForUrl(const QUrl&);
+	virtual QString userAgentForUrl(const QUrl&) const;
 
 private:
 	bool return_bool;

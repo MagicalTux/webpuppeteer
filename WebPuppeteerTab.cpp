@@ -64,6 +64,8 @@ void WebPuppeteerTab::test(QNetworkReply*reply) {
 QWebPage *WebPuppeteerTab::createWindow(WebWindowType) {
 	// we don't care about the type, since modal has no meaning here
 	WebPuppeteerTab *tab = new WebPuppeteerTab(parent);
+	// inherit settings
+	tab->user_agent = user_agent;
 	queue.append(tab);
 	return tab;
 }
@@ -361,7 +363,7 @@ void WebPuppeteerTab::overrideUserAgent(const QString &ua) {
 	user_agent = ua;
 }
 
-QString WebPuppeteerTab::userAgentForUrl(const QUrl&) {
+QString WebPuppeteerTab::userAgentForUrl(const QUrl&) const {
 	if (user_agent.isEmpty())
 		return "Mozilla/5.0 (%Platform%%Security%%Subplatform%) AppleWebKit/%WebKitVersion% (KHTML, like Gecko) %AppVersion Safari/%WebKitVersion%";
 	return user_agent;

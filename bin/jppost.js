@@ -30,7 +30,7 @@ while(true) {
 
 	var serial = sys.exec("/home/magicaltux/project/ykpers/serial.sh");
 	serial = serial.replace(/\s/g, "");
-	if (isNaN(serial)) {
+	if ((isNaN(serial)) || (!serial)) {
 		sys.log(serial);
 		sys.abort();
 	}
