@@ -117,6 +117,11 @@ void WebPuppeteerTab::javaScriptAlert(QWebFrame*, const QString &msg) {
 	qDebug("Got javascript alert: %s", qPrintable(msg));
 }
 
+bool WebPuppeteerTab::javaScriptConfirm(QWebFrame*, const QString &msg) {
+	qDebug("Got javascript confirm: %s", qPrintable(msg));
+	return true;
+}
+
 bool WebPuppeteerTab::supportsExtension(Extension e) {
 	switch(e) {
 		case QWebPage::ChooseMultipleFilesExtension: return true;
@@ -367,5 +372,9 @@ QString WebPuppeteerTab::userAgentForUrl(const QUrl&) const {
 	if (user_agent.isEmpty())
 		return "Mozilla/5.0 (%Platform%%Security%%Subplatform%) AppleWebKit/%WebKitVersion% (KHTML, like Gecko) %AppVersion Safari/%WebKitVersion%";
 	return user_agent;
+}
+
+void WebPuppeteerTab::setDefaultCharset(const QString &charset) {
+	settings()->setDefaultTextEncoding(charset);
 }
 

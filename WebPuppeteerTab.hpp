@@ -28,6 +28,7 @@ public slots:
 	QScriptValue getNewWindow(); // get latest opened window
 
 	void overrideUserAgent(const QString &ua); // change user agent
+	void setDefaultCharset(const QString &charset);
 
 	// download
 	QScriptValue getDownloadedFile(); // get one downloaded file
@@ -66,6 +67,7 @@ public slots:
 
 protected:
 	virtual void javaScriptAlert(QWebFrame*, const QString &msg);
+	virtual bool javaScriptConfirm(QWebFrame*, const QString &msg);
 	virtual QWebPage *createWindow(WebWindowType type);
 	virtual QString userAgentForUrl(const QUrl&) const;
 
