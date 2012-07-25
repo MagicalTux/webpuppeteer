@@ -12,6 +12,37 @@
 #include <QTimer>
 #include <QTemporaryFile>
 
+WebPuppeteerTabNetSpy::WebPuppeteerTabNetSpy(QObject *parent): QNetworkAccessManager(parent) {
+}
+
+QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData) {
+	QString op_str;
+	switch(op) {
+		case QNetworkAccessManager::HeadOperation: op_str = "HEAD"; break;
+		case QNetworkAccessManager::GetOperation: op_str = "GET"; break;
+		case QNetworkAccessManager::PutOperation: op_str = "PUT"; break;
+		case QNetworkAccessManager::PostOperation: op_str = "POST"; break;
+		case QNetworkAccessManager::DeleteOperation: op_str = "DELETE"; break;
+		case QNetworkAccessManager::CustomOperation: op_str = "CUSTOM"; break;
+		case QNetworkAccessManager::UnknownOperation: op_str = "?"; break;
+	}
+
+//	qDebug("Req: %s %s", qPrintable(op_str), qPrintable(req.url().toString()));
+	if (op == QNetworkAccessManager::PostOperation) {
+//		qDebug("post: %s", outgoingData->readAll().data());
+	}
+	QNetworkReply *reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
+	if (op == QNetworkAccessManager::PostOperation) {
+		// spy result too
+//		connect(reply, SIGNAL(finished()), this, SLOT(spyFinished()));
+	}
+	return reply;
+}
+
+void WebPuppeteerTabNetSpy::spyFinished() {
+	qDebug("finished");
+}
+
 WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	parent = _parent;
 
@@ -19,8 +50,15 @@ WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	setViewportSize(QSize(1024,768));
 	setForwardUnsupportedContent(true);
 
+	setNetworkAccessManager(new WebPuppeteerTabNetSpy(this));
+
 	connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
 	connect(networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,const QList<QSslError>&)), this, SLOT(handleSslErrors(QNetworkReply*,const QList<QSslError>&)));
+}
+
+void WebPuppeteerTab::test(QNetworkReply*reply) {
+	QNetworkRequest req = reply->request();
+	qDebug("REQ finished: %s", qPrintable(req.url().toString()));
 }
 
 QWebPage *WebPuppeteerTab::createWindow(WebWindowType) {
@@ -317,5 +355,15 @@ void WebPuppeteerTab::typeTab() {
 
 QString WebPuppeteerTab::getHtml() {
 	return mainFrame()->toHtml();
+}
+
+void WebPuppeteerTab::overrideUserAgent(const QString &ua) {
+	user_agent = ua;
+}
+
+QString WebPuppeteerTab::userAgentForUrl(const QUrl&) {
+	if (user_agent.isEmpty())
+		return "Mozilla/5.0 (%Platform%%Security%%Subplatform%) AppleWebKit/%WebKitVersion% (KHTML, like Gecko) %AppVersion Safari/%WebKitVersion%";
+	return user_agent;
 }
 

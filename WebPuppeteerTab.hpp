@@ -3,6 +3,7 @@
 #include <QWebElement>
 #include <QSslError>
 #include <QSet>
+#include <QNetworkAccessManager>
 
 class WebPuppeteer;
 
@@ -25,6 +26,8 @@ public slots:
 	void reload(bool force_no_cache = false);
 	bool wait(int timeout = 60); // wait for page to finish loading
 	QScriptValue getNewWindow(); // get latest opened window
+
+	void overrideUserAgent(const QString &ua); // change user agent
 
 	// download
 	QScriptValue getDownloadedFile(); // get one downloaded file
@@ -59,9 +62,12 @@ public slots:
 	void downloadFile(QNetworkReply*);
 	void downloadFileFinished(QNetworkReply*reply=0);
 
+	void test(QNetworkReply*);
+
 protected:
 	virtual void javaScriptAlert(QWebFrame*, const QString &msg);
 	virtual QWebPage *createWindow(WebWindowType type);
+	virtual QString userAgentForUrl(const QUrl&);
 
 private:
 	bool return_bool;
@@ -70,5 +76,16 @@ private:
 	QSet<QByteArray> trusted_certificates;
 	QList<WebPuppeteerTab*> queue;
 	QList<QScriptValue> file_queue;
+	QString user_agent;
+};
+
+class WebPuppeteerTabNetSpy: public QNetworkAccessManager {
+	Q_OBJECT;
+public:
+	WebPuppeteerTabNetSpy(QObject *parent = 0);
+public slots:
+	void spyFinished();
+protected:
+	virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 };
 
