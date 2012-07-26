@@ -26,6 +26,7 @@ public slots:
 	QString tagName();
 
 	// fidning elements
+	QScriptValue find(QScriptValue);
 	QScriptValue findFirst(const QString &selector);
 	QScriptValue findAll(const QString &selector);
 	QScriptValue findAllContaining(const QString &text);
@@ -35,6 +36,7 @@ public slots:
 	QScriptValue parentNode();
 	QScriptValue firstChild();
 	QScriptValue nextSibling();
+	QScriptValue frameDocument(QString framename);
 
 	// focus
 	void setFocus();

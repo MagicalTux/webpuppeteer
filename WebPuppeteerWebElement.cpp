@@ -1,6 +1,8 @@
 #include "WebPuppeteerWebElement.hpp"
 #include "WebPuppeteerTab.hpp"
 #include "WebPuppeteer.hpp"
+#include <QScriptValueIterator>
+#include <QWebFrame>
 
 WebPuppeteerWebElement::WebPuppeteerWebElement(WebPuppeteerTab *_parent, QWebElement el) {
 	e = el;
@@ -98,6 +100,44 @@ QScriptValue WebPuppeteerWebElement::findAllContaining(const QString &text) {
 		if ((check) && (str.contains(text, Qt::CaseInsensitive))) {
 			res.setProperty(res_pos++, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership));
 		}
+	}
+
+	return res;
+}
+
+QScriptValue WebPuppeteerWebElement::find(QScriptValue v) {
+	QList<QWebElement> c = allChildren();
+	QScriptValue res = parent->getParent()->engine().newArray();
+	int res_pos = 0;
+
+	QMap<QString,QString> s;
+	if (!v.isObject()) return parent->getParent()->engine().nullValue();
+	QScriptValueIterator vi(v);
+	while(vi.hasNext()) {
+		vi.next();
+		s.insert(vi.name().toLower(), vi.value().toString());
+	}
+
+	for(int i = 0; i < c.size(); i++) {
+		QWebElement el = c.at(i);
+		bool ok = true;
+
+		for(QMap<QString,QString>::iterator j = s.begin(); j != s.end(); j++) {
+			if (j.key() == "tagname") {
+				if (j.value().toUpper() != el.tagName()) {
+					ok = false;
+					break;
+				}
+				continue;
+			}
+			if (el.attribute(j.key()) != j.value()) {
+				ok = false;
+				break;
+			}
+		}
+		if (!ok) continue;
+
+		res.setProperty(res_pos++, parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, el), QScriptEngine::ScriptOwnership));
 	}
 
 	return res;
@@ -203,5 +243,18 @@ void WebPuppeteerWebElement::setFocus() {
 
 bool WebPuppeteerWebElement::hasFocus() {
 	return e.hasFocus();
+}
+
+QScriptValue WebPuppeteerWebElement::frameDocument(QString framename) {
+	if (e.webFrame() == NULL) return QScriptValue(QScriptValue::NullValue);
+
+	QWebFrame *frame = e.webFrame();
+	QList<QWebFrame *> fl = frame->childFrames();
+
+	for(int i = 0; i < fl.size(); i++) {
+		if (fl.at(i)->frameName() == framename) return parent->getParent()->engine().newQObject(new WebPuppeteerWebElement(parent, fl.at(i)->documentElement()), QScriptEngine::ScriptOwnership);
+	}
+
+	return QScriptValue(QScriptValue::NullValue);
 }
 

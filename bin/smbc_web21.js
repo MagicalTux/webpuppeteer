@@ -43,6 +43,7 @@ tab.post("https://e-biz.smbc.co.jp/core/exec/servlet/ACH99OMCL_WEBCNTL", "User="
 
 tab.document().findAllContaining("Web21")[0].click();
 tab.wait();
+tab.wait(3);
 
 tab.interact();
 
