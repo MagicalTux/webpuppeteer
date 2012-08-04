@@ -13,6 +13,12 @@
 #include <QTemporaryFile>
 
 WebPuppeteerTabNetSpy::WebPuppeteerTabNetSpy(QObject *parent): QNetworkAccessManager(parent) {
+	connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(spyFinished()));
+	cnx_count = 0;
+}
+
+int WebPuppeteerTabNetSpy::getCount() const {
+	return cnx_count;
 }
 
 QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData) {
@@ -27,6 +33,7 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 		case QNetworkAccessManager::UnknownOperation: op_str = "?"; break;
 	}
 
+
 //	qDebug("Req: %s %s", qPrintable(op_str), qPrintable(req.url().toString()));
 	if (op == QNetworkAccessManager::PostOperation) {
 //		qDebug("post: %s", outgoingData->readAll().data());
@@ -36,11 +43,14 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 		// spy result too
 //		connect(reply, SIGNAL(finished()), this, SLOT(spyFinished()));
 	}
+	cnx_count++;
 	return reply;
 }
 
 void WebPuppeteerTabNetSpy::spyFinished() {
-	qDebug("finished");
+	cnx_count--;
+	if (cnx_count == 0)
+		allFinished();
 }
 
 WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
@@ -202,6 +212,13 @@ WebPuppeteer *WebPuppeteerTab::getParent() {
 bool WebPuppeteerTab::load(const QString &url, int timeout) {
 	mainFrame()->load(QUrl(url));
 	return wait(timeout);
+}
+
+void WebPuppeteerTab::waitFinish() {
+	if (static_cast<WebPuppeteerTabNetSpy*>(networkAccessManager())->getCount() == 0) return;
+	QEventLoop e;
+	connect(networkAccessManager(), SIGNAL(allFinished()), &e, SLOT(quit()));
+	e.exec();
 }
 
 bool WebPuppeteerTab::post(const QString &url, const QString &post, const QString content_type, int timeout) {
