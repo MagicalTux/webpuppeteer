@@ -15,6 +15,7 @@ public slots:
 	void sleep(int msecs);
 	QScriptValue get(const QString &url);
 	QScriptValue signedPost(const QString &url, const QString &post, const QString &api_key, const QString &api_secret);
+	QScriptValue mtgoxApi(const QString &path, const QString &post, const QString &api_key, const QString &api_secret);
 	QScriptValue newTab();
 	QString fileGetContents(QString filename);
 	bool filePutContents(QString filename, QString data);
