@@ -22,6 +22,7 @@ var cb = function (trx) {
 
 b.scanAccountByNumber("87 1090 2398 0000 0001 1759 5675", cb); // PLN
 b.scanAccountByNumber("59 1090 2398 0000 0001 1759 5694", cb); // EUR
+b.scanAccountByNumber("58 1090 2398 0000 0001 1759 5712", cb); // USD
 
 b.logout();
 
