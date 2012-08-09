@@ -9,5 +9,5 @@ INCLUDEPATH += .
 QT += script network webkit
 
 # Input
-HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp WebPuppeteerWebElement.hpp
-SOURCES += main.cpp WebPuppeteer.cpp WebPuppeteerSys.cpp WebPuppeteerTab.cpp WebPuppeteerWebElement.cpp sha2.c
+HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp WebPuppeteerWebElement.hpp TimeoutTrigger.hpp
+SOURCES += main.cpp WebPuppeteer.cpp WebPuppeteerSys.cpp WebPuppeteerTab.cpp WebPuppeteerWebElement.cpp sha2.c TimeoutTrigger.cpp

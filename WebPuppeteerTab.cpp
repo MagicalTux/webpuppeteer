@@ -11,6 +11,7 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QTemporaryFile>
+#include "TimeoutTrigger.hpp"
 
 WebPuppeteerTabNetSpy::WebPuppeteerTabNetSpy(QObject *parent): QNetworkAccessManager(parent) {
 	connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(spyFinished()));
@@ -43,6 +44,8 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 		// spy result too
 //		connect(reply, SIGNAL(finished()), this, SLOT(spyFinished()));
 	}
+	if (cnx_count == 0)
+		started();
 	cnx_count++;
 	return reply;
 }
@@ -214,10 +217,16 @@ bool WebPuppeteerTab::load(const QString &url, int timeout) {
 	return wait(timeout);
 }
 
-void WebPuppeteerTab::waitFinish() {
-	if (static_cast<WebPuppeteerTabNetSpy*>(networkAccessManager())->getCount() == 0) return;
+void WebPuppeteerTab::waitFinish(int idle) {
 	QEventLoop e;
-	connect(networkAccessManager(), SIGNAL(allFinished()), &e, SLOT(quit()));
+	TimeoutTrigger t(idle);
+
+	if (static_cast<WebPuppeteerTabNetSpy*>(networkAccessManager())->getCount() > 0)
+		t.start();
+
+	connect(&t, SIGNAL(timeout()), &e, SLOT(quit()));
+	connect(networkAccessManager(), SIGNAL(started()), &t, SLOT(start()));
+	connect(networkAccessManager(), SIGNAL(allFinished()), &t, SLOT(end()));
 	e.exec();
 }
 
