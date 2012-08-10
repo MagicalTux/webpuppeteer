@@ -37,6 +37,7 @@ while(true) {
 	sys.log("Got YK with serial "+serial);
 
 	var post = res["return"]["post"];
+	var is_gift = res["return"]["gift"];
 
 	try {
 		tab.document().findAllContaining("Make Label")[0].click();
@@ -68,7 +69,7 @@ while(true) {
 		tab.wait();
 		tab.document().getElementById("M080100_itemBean_pkg").setAttribute("value", "USB CHIP YUBIKEY #"+serial);
 		tab.document().getElementById("M080100_itemBean_couCd").eval("this.value='SE'");
-		tab.document().getElementById("M080100_itemBean_cost_value").setAttribute("value", "29.99");
+		tab.document().getElementById("M080100_itemBean_cost_value").setAttribute("value", "14.99");
 		tab.document().getElementById("curUnit").eval("this.value='USD'");
 		tab.document().findFirst("input.button").click();
 		tab.wait();
@@ -77,8 +78,12 @@ while(true) {
 		tab.document().findFirst("input.button").click();
 		tab.wait();
 		tab.document().getElementById("M060800_itemCount").setAttribute("value", "1");
-		tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='3'"); // 3=merchandise 0=gift
-		tab.document().getElementById("M060800_shippingBean_pkgTotalPrice_value").eval("this.value='2500'");
+		if (is_gift) {
+			tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='0'"); // 3=merchandise 0=gift
+		} else {
+			tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='3'"); // 3=merchandise 0=gift
+		}
+		tab.document().getElementById("M060800_shippingBean_pkgTotalPrice_value").eval("this.value='1200'");
 		tab.document().getElementById("M060800_ShippingBean_danger").click();
 		tab.document().findFirst("td > input.button").click();
 		tab.wait();
