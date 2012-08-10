@@ -221,12 +221,14 @@ void WebPuppeteerTab::waitFinish(int idle) {
 	QEventLoop e;
 	TimeoutTrigger t(idle);
 
-	if (static_cast<WebPuppeteerTabNetSpy*>(networkAccessManager())->getCount() > 0)
-		t.start();
-
 	connect(&t, SIGNAL(timeout()), &e, SLOT(quit()));
 	connect(networkAccessManager(), SIGNAL(started()), &t, SLOT(start()));
 	connect(networkAccessManager(), SIGNAL(allFinished()), &t, SLOT(end()));
+
+	// if something pending, stop timer
+	if (static_cast<WebPuppeteerTabNetSpy*>(networkAccessManager())->getCount() > 0)
+		t.start();
+
 	e.exec();
 }
 

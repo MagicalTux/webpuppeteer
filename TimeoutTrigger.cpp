@@ -1,6 +1,7 @@
 #include "TimeoutTrigger.hpp"
 
 TimeoutTrigger::TimeoutTrigger(int timeout) {
+	in_op = false;
 	t.setInterval(timeout);
 	t.setSingleShot(true);
 	connect(&t, SIGNAL(timeout()), this, SLOT(timer_timeout()));
