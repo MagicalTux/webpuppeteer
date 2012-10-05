@@ -25,7 +25,7 @@ public slots:
 	void back(); // go back
 	void reload(bool force_no_cache = false);
 	bool wait(int timeout = 60); // wait for page to finish loading
-	void waitFinish(int idle = 500); // 500ms default idle, if something loads again within those 500 ms, then wait until it finishes
+	void waitFinish(int idle = 50); // 500ms default idle, if something loads again within those 500 ms, then wait until it finishes
 	QScriptValue getNewWindow(); // get latest opened window
 
 	void overrideUserAgent(const QString &ua); // change user agent

@@ -12,6 +12,7 @@
 
 WebPuppeteerSys::WebPuppeteerSys(WebPuppeteer *_parent): QObject(_parent) {
 	parent = _parent;
+	tmp_e = NULL;
 }
 
 void WebPuppeteerSys::log(const QString &msg) {
@@ -203,6 +204,32 @@ QScriptValue WebPuppeteerSys::mtgoxApi(const QString &path, const QString &post,
 
 void WebPuppeteerSys::alert(QString string) {
 	QMessageBox::information(NULL, "WebPuppeteer alert", string);
+}
+
+void WebPuppeteerSys::alertcb(QString string, QScriptValue cb) {
+	tmp_cb = cb;
+	QMessageBox mb(QMessageBox::Information, "WebPuppeteer alert", string, QMessageBox::Ok);
+	QEventLoop e;
+	QTimer t;
+	tmp_e = &e;
+	t.setSingleShot(false);
+	t.setInterval(250);
+	t.start();
+	connect(&mb, SIGNAL(buttonClicked(QAbstractButton*)), &e, SLOT(quit()));
+	connect(&t, SIGNAL(timeout()), this, SLOT(alertcb_cb()));
+	mb.show();
+
+	e.exec();
+	tmp_e = NULL;
+}
+
+void WebPuppeteerSys::alertcb_cb() {
+	if (tmp_e == NULL) return;
+	if (tmp_cb.call().toBool()) tmp_e->quit();
+}
+
+bool WebPuppeteerSys::confirm(QString string) {
+	return QMessageBox::question(NULL, "WebPuppeteer question", string, QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes;
 }
 
 void WebPuppeteerSys::quit() {

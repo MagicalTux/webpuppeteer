@@ -35,7 +35,7 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 	}
 
 
-//	qDebug("Req: %s %s", qPrintable(op_str), qPrintable(req.url().toString()));
+	//qDebug("Req: %s %s", qPrintable(op_str), qPrintable(req.url().toString()));
 	if (op == QNetworkAccessManager::PostOperation) {
 //		qDebug("post: %s", outgoingData->readAll().data());
 	}
@@ -52,6 +52,7 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 
 void WebPuppeteerTabNetSpy::spyFinished() {
 	cnx_count--;
+	//qDebug("REQ finished");
 	if (cnx_count == 0)
 		allFinished();
 }
@@ -105,6 +106,7 @@ void WebPuppeteerTab::handleSslErrors(QNetworkReply *reply,const QList<QSslError
 				QByteArray hash = list.at(i).certificate().digest(QCryptographicHash::Sha1);
 				if (trusted_certificates.contains(hash)) {
 					this_ignore_ok = true;
+//					qDebug("Ignorable SSL error");
 				} else {
 					qDebug("The following error could be ignored by calling tab.trustCertificate(\"%s\")", hash.toHex().data());
 				}
@@ -118,8 +120,10 @@ void WebPuppeteerTab::handleSslErrors(QNetworkReply *reply,const QList<QSslError
 		}
 	}
 
-	if (ignore_ok)
+	if (ignore_ok) {
+//		qDebug("Ignoring SSL errors");
 		reply->ignoreSslErrors();
+	}
 }
 
 bool WebPuppeteerTab::shouldInterruptJavaScript() {
@@ -335,6 +339,7 @@ void WebPuppeteerTab::interact() {
 	QEventLoop e;
 
 	QWebView *v = new QWebView();
+	v->resize(QSize(1280,1024));
 	v->setAttribute(Qt::WA_DeleteOnClose, true);
 	connect(v, SIGNAL(destroyed(QObject*)), &e, SLOT(quit()));
 	v->setPage(this);

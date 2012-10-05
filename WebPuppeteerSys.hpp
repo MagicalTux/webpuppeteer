@@ -1,6 +1,7 @@
 #include <QObject>
 #include <QScriptValue>
 #include <QNetworkAccessManager>
+#include <QEventLoop>
 
 class WebPuppeteer;
 class WebPuppeteerTab;
@@ -22,13 +23,19 @@ public slots:
 	bool filePutContentsB64(QString filename, QString data);
 	QScriptValue include(QString filename); // include a file
 	void alert(QString string);
+	void alertcb(QString string, QScriptValue cb);
+	bool confirm(QString string);
 	QString exec(QString str);
 
 	void quit();
 	void abort();
 
+	void alertcb_cb(); // used by alertcb internally
+
 private:
 	WebPuppeteer *parent;
 	QNetworkAccessManager net;
+	QScriptValue tmp_cb;
+	QEventLoop *tmp_e;
 };
 

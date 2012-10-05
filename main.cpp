@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QStringList>
 #include <QWebSettings>
+#include <QSslSocket>
 #include "WebPuppeteer.hpp"
 
 int main(int argc, char *argv[]) {
@@ -9,6 +10,10 @@ int main(int argc, char *argv[]) {
 
 	QStringList args = app.arguments();
 	QString file;
+
+	if (!QSslSocket::supportsSsl()) {
+		qDebug("WARNING: SSL not supported");
+	}
 
 	if (args.size() > 1) {
 		file = args.at(1);

@@ -26,11 +26,14 @@ while(true) {
 	if (!res["return"]["item"]) break;
 
 	sys.log("Handling order "+res["return"]["item"]+" for "+res["return"]["item_name"]);
-	sys.alert("Please insert one of "+res["return"]["item_name"]);
+	sys.alertcb("Please insert one of "+res["return"]["item_name"], (function() { var serial = sys.exec("/home/magicaltux/project/ykpers/serial.sh"); serial = serial.replace(/\s/g, ""); return (!((isNaN(serial)) || (!serial))); }));
 
 	var serial = sys.exec("/home/magicaltux/project/ykpers/serial.sh");
 	serial = serial.replace(/\s/g, "");
 	if ((isNaN(serial)) || (!serial)) {
+		if (sys.confirm("Recycle yubikey?")) {
+			sys.log("RECYCLE");
+		}
 		sys.log(serial);
 		sys.abort();
 	}
@@ -50,10 +53,10 @@ while(true) {
 		tab.document().getElementById("M060505_addrToBean_nam").setAttribute("value", post["name"]);
 		tab.document().getElementById("M060505_addrToBean_companyName").setAttribute("value", post["company_name"]);
 		if (post["address2"]) {
-			tab.document().getElementById("M060505_addrToBean_add1").setAttribute("value", post["address"]);
+			tab.document().getElementById("M060505_addrToBean_add1").setAttribute("value", post["address"].substr(0,80));
 			tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address2"]);
 		} else {
-			tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address"]);
+			tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address"].substr(0,80));
 		}
 		tab.document().getElementById("M060505_addrToBean_add3").setAttribute("value", post["city"]);
 		tab.document().getElementById("M060505_addrToBean_pref").setAttribute("value", post["province"]);
@@ -125,7 +128,7 @@ while(true) {
 	}
 
 	var yubicode = sys.exec("/home/magicaltux/project/ykpers/pers.sh").replace(/\s/g, "");
-	if (yubicode == "FAILED!") {
+	if ((yubicode == "FAILED!") || (yubicode == "")) {
 		sys.log("failed to create yubicode!");
 		sys.abort();
 	}
@@ -144,5 +147,6 @@ while(true) {
 	}
 
 	res = JSON.parse(sys.signedPost("https://mtgox.com/api/1/generic/yubikey/prepare", post, api_key, api_secret));
+	sys.log("");
 }
 
