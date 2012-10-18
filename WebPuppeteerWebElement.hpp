@@ -17,6 +17,8 @@ public slots:
 	QString textContent();
 	void eval(const QString &js);
 	bool click();
+	bool onblur();
+	bool onchange();
 
 	// CSS
 	void setStyleProperty(const QString &name, const QString &value);

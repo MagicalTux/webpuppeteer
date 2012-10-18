@@ -74,6 +74,14 @@ bool WebPuppeteerWebElement::click() {
 	return e.evaluateJavaScript("(function(obj) { var e = document.createEvent('MouseEvents'); e.initEvent('click',true,false); return obj.dispatchEvent(e); })(this)").toBool();
 }
 
+bool WebPuppeteerWebElement::onblur() {
+	return e.evaluateJavaScript("(function(obj) { var e = document.createEvent('MouseEvents'); e.initEvent('blur',true,false); return obj.dispatchEvent(e); })(this)").toBool();
+}
+
+bool WebPuppeteerWebElement::onchange() {
+	return e.evaluateJavaScript("(function(obj) { var e = document.createEvent('MouseEvents'); e.initEvent('change',true,false); return obj.dispatchEvent(e); })(this)").toBool();
+}
+
 QScriptValue WebPuppeteerWebElement::findAllContaining(const QString &text) {
 	QList<QWebElement> c = allChildren();
 
