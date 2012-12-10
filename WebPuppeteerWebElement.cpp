@@ -25,8 +25,8 @@ QString WebPuppeteerWebElement::xml() {
 	return e.toOuterXml();
 }
 
-void WebPuppeteerWebElement::eval(const QString &js) {
-	e.evaluateJavaScript(js);
+QScriptValue WebPuppeteerWebElement::eval(const QString &js) {
+	return parent->getParent()->engine().newVariant(e.evaluateJavaScript(js));
 }
 
 void WebPuppeteerWebElement::setStyleProperty(const QString &name, const QString &value) {
