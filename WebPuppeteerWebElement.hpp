@@ -15,7 +15,7 @@ public slots:
 	bool hasAttribute(const QString &name);
 	QString xml(); // return element as xml
 	QString textContent();
-	void eval(const QString &js);
+	QScriptValue eval(const QString &js);
 	bool click();
 	bool onblur();
 	bool onchange();
