@@ -26,9 +26,9 @@ while(true) {
 	if (!res["return"]["item"]) break;
 
 	sys.log("Handling order "+res["return"]["item"]+" for "+res["return"]["item_name"]);
-	sys.alertcb("Please insert one of "+res["return"]["item_name"], (function() { var serial = sys.exec("/home/magicaltux/project/ykpers/serial.sh"); serial = serial.replace(/\s/g, ""); return (!((isNaN(serial)) || (!serial))); }));
+	sys.alertcb("Please insert one of "+res["return"]["item_name"], (function() { var serial = sys.exec("/home/magicaltux/projects/ykpers/serial.sh"); serial = serial.replace(/\s/g, ""); return (!((isNaN(serial)) || (!serial))); }));
 
-	var serial = sys.exec("/home/magicaltux/project/ykpers/serial.sh");
+	var serial = sys.exec("/home/magicaltux/projects/ykpers/serial.sh");
 	serial = serial.replace(/\s/g, "");
 	if ((isNaN(serial)) || (!serial)) {
 		if (sys.confirm("Recycle yubikey?")) {
@@ -127,7 +127,7 @@ while(true) {
 		sys.abort();
 	}
 
-	var yubicode = sys.exec("/home/magicaltux/project/ykpers/pers.sh").replace(/\s/g, "");
+	var yubicode = sys.exec("/home/magicaltux/projects/ykpers/pers.sh").replace(/\s/g, "");
 	if ((yubicode == "FAILED!") || (yubicode == "")) {
 		sys.log("failed to create yubicode!");
 		sys.abort();
