@@ -49,9 +49,10 @@ var cb = function (trx) {
 
 try {
 //	b.scanAccountByNumber("87 1090 2398 0000 0001 1759 5675", cb); // PLN
-	b.scanAccountByNumber("59 1090 2398 0000 0001 1759 5694", cb,62); // EUR
+	b.scanAccountByNumber("59 1090 2398 0000 0001 1759 5694", cb, 78, "2013-04-02"); // EUR
 //	b.scanAccountByNumber("58 1090 2398 0000 0001 1759 5712", cb); // USD
 } catch(e) {
+	sys.log("Error: "+e);
 }
 
 try {

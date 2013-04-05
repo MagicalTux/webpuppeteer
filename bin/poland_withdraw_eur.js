@@ -5,7 +5,7 @@ sys.include("config.js");
 var b = null;
 
 while(true) {
-	var res = sys.signedPost("https://mtgox.com/api/1/generic/bank/withdraw_pull", "bank=fe2e074d-e127-42fb-bdd2-9b729029b313&currency=EUR&small_first=1", api_key, api_secret);
+	var res = sys.signedPost("https://mtgox.com/api/1/generic/bank/withdraw_pull", "bank=fe2e074d-e127-42fb-bdd2-9b729029b313&currency=EUR&small_first=0", api_key, api_secret);
 	res = JSON.parse(res);
 	if (res.result != "success") {
 		sys.log(JSON.stringify(res));
