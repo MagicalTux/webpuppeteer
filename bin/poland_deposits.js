@@ -19,7 +19,7 @@ var cb = function (trx) {
 		later_do.unshift(trx);
 		return true;
 	}
-	if (res["return"]["status"] == "already_in_db") return false;//true;// XXX false;
+	if (res["return"]["status"] == "already_in_db") return true;// XXX false;
 
 	if (trx.desc.substr(0,14) == "MtGox Withdraw") return true; // no need for check
 
