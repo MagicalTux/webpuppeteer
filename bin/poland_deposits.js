@@ -19,7 +19,7 @@ var cb = function (trx) {
 		later_do.unshift(trx);
 		return true;
 	}
-	if (res["return"]["status"] == "already_in_db") return true;// XXX false;
+	if (res["return"]["status"] == "already_in_db") return false;
 
 	if (trx.desc.substr(0,14) == "MtGox Withdraw") return true; // no need for check
 
@@ -48,11 +48,12 @@ var cb = function (trx) {
 };
 
 try {
-//	b.scanAccountByNumber("87 1090 2398 0000 0001 1759 5675", cb); // PLN
-	b.scanAccountByNumber("59 1090 2398 0000 0001 1759 5694", cb, 78, "2013-04-02"); // EUR
+	b.scanAccountByNumber("87 1090 2398 0000 0001 1759 5675", cb); // PLN
+	b.scanAccountByNumber("59 1090 2398 0000 0001 1759 5694", cb); // EUR
 //	b.scanAccountByNumber("58 1090 2398 0000 0001 1759 5712", cb); // USD
 } catch(e) {
 	sys.log("Error: "+e);
+	b.tab.interact();
 }
 
 try {
