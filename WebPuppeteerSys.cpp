@@ -53,7 +53,7 @@ QScriptValue WebPuppeteerSys::get(const QString &url) {
 QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post, const QString &api_key, const QString &api_secret) {
 	// compatible with MtGox API
 	static quint64 last_once = 0;
-	quint64 once = QDateTime::currentMSecsSinceEpoch();
+	quint64 once = (QDateTime::currentMSecsSinceEpoch()*1000);
 	if (once <= last_once) {
 		once = last_once+1;
 	}
@@ -61,9 +61,9 @@ QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post
 
 	QByteArray data_post;
 	if (post == "") {
-		data_post = (post + QString("nonce=%1").arg(once)).toUtf8();
+		data_post = (post + QString("tonce=%1").arg(once)).toUtf8();
 	} else {
-		data_post = (post + QString("&nonce=%1").arg(once)).toUtf8();
+		data_post = (post + QString("&tonce=%1").arg(once)).toUtf8();
 	}
 
 
@@ -128,7 +128,7 @@ QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post
 QScriptValue WebPuppeteerSys::mtgoxApi(const QString &path, const QString &post, const QString &api_key, const QString &api_secret) {
 	// compatible with MtGox API
 	static quint64 last_once = 0;
-	quint64 once = QDateTime::currentMSecsSinceEpoch();
+	quint64 once = (QDateTime::currentMSecsSinceEpoch()*1000);
 	if (once <= last_once) {
 		once = last_once+1;
 	}
@@ -137,9 +137,9 @@ QScriptValue WebPuppeteerSys::mtgoxApi(const QString &path, const QString &post,
 	QByteArray data_path = path.toUtf8(); // for hashing
 	QByteArray data_post;
 	if (post == "") {
-		data_post = (post + QString("nonce=%1").arg(once)).toUtf8();
+		data_post = (post + QString("tonce=%1").arg(once)).toUtf8();
 	} else {
-		data_post = (post + QString("&nonce=%1").arg(once)).toUtf8();
+		data_post = (post + QString("&tonce=%1").arg(once)).toUtf8();
 	}
 
 	QString url = "https://mtgox.com/api/2/"+path;
