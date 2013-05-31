@@ -53,7 +53,6 @@ try {
 //	b.scanAccountByNumber("58 1090 2398 0000 0001 1759 5712", cb); // USD
 } catch(e) {
 	sys.log("Error: "+e);
-	b.tab.interact();
 }
 
 try {
