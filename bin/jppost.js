@@ -42,89 +42,94 @@ while(true) {
 	var post = res["return"]["post"];
 	var is_gift = res["return"]["gift"];
 
-	try {
-		tab.document().findAllContaining("Make Label")[0].click();
-		tab.wait();
-		tab.document().findFirst("div.mrgT10 > input.button").click();
-		tab.wait();
-		tab.document().getElementById("M060400_sel-1").click();
-		tab.wait();
-		// input receipient addr from post
-		tab.document().getElementById("M060505_addrToBean_nam").setAttribute("value", post["name"]);
-		tab.document().getElementById("M060505_addrToBean_companyName").setAttribute("value", post["company_name"]);
-		if (post["address2"]) {
-			tab.document().getElementById("M060505_addrToBean_add1").setAttribute("value", post["address"].substr(0,80));
-			tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address2"]);
-		} else {
-			tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address"].substr(0,80));
-		}
-		tab.document().getElementById("M060505_addrToBean_add3").setAttribute("value", post["city"]);
-		tab.document().getElementById("M060505_addrToBean_pref").setAttribute("value", post["province"]);
-		tab.document().getElementById("M060505_addrToBean_postal").setAttribute("value", post["zip"]);
-		tab.document().getElementById("M060505_addrToBean_couCode").eval("this.value="+JSON.stringify(post["country"]));
-		tab.document().getElementById("M060505_addrToBean_tel").setAttribute("value", post["phone"]);
-		tab.document().getElementById("M060505_addrToBean_fax").setAttribute("value", post["fax"]);
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-	
-		tab.document().getElementById("M060800_shippingBean_sendType1").click();
-		tab.document().getElementsByName("item_button01")[0].click();
-		tab.wait();
-		tab.document().getElementById("M080100_itemBean_pkg").setAttribute("value", "USB CHIP YUBIKEY #"+serial);
-		tab.document().getElementById("M080100_itemBean_couCd").eval("this.value='SE'");
-		tab.document().getElementById("M080100_itemBean_cost_value").setAttribute("value", "14.99");
-		tab.document().getElementById("curUnit").eval("this.value='USD'");
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-		tab.document().getElementById("M060800_itemCount").setAttribute("value", "1");
-		if (is_gift) {
-			tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='0'"); // 3=merchandise 0=gift
-		} else {
-			tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='3'"); // 3=merchandise 0=gift
-		}
-		tab.document().getElementById("M060800_shippingBean_pkgTotalPrice_value").eval("this.value='1200'");
-		tab.document().getElementById("M060800_ShippingBean_danger").click();
-		tab.document().findFirst("td > input.button").click();
-		tab.wait();
-	
-		tab.document().getElementById("M060900_shippingBean_totalWeight_value").eval("this.value='36'");
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-		tab.document().findFirst("div.mrgT10 > table > tbody > tr > td > input.button").click();
-		tab.wait();
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-	
-		// get all downloaded files
-		sys.log("waiting for files download");
-		var cnt = 2;
-		while(cnt) {
-			var file = tab.getDownloadedFile();
-			if (!file) {
-				sys.sleep(100);
-				continue;
+	if (post["country"] != "JP") {
+		try {
+			tab.document().findAllContaining("Make Label")[0].click();
+			tab.wait();
+			tab.document().findFirst("div.mrgT10 > input.button").click();
+			tab.wait();
+			tab.document().getElementById("M060400_sel-1").click();
+			tab.wait();
+			// input receipient addr from post
+			tab.document().getElementById("M060505_addrToBean_nam").setAttribute("value", post["name"]);
+			tab.document().getElementById("M060505_addrToBean_companyName").setAttribute("value", post["company_name"]);
+			if (post["address2"]) {
+				tab.document().getElementById("M060505_addrToBean_add1").setAttribute("value", post["address"].substr(0,80));
+				tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address2"]);
+			} else {
+				tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address"].substr(0,80));
 			}
-			sys.log("Got file: "+file.filename);
-			sys.filePutContentsB64("/home/magicaltux/Downloads/"+file.filename, file.filedata);
-			cnt--;
+			tab.document().getElementById("M060505_addrToBean_add3").setAttribute("value", post["city"]);
+			tab.document().getElementById("M060505_addrToBean_pref").setAttribute("value", post["province"]);
+			tab.document().getElementById("M060505_addrToBean_postal").setAttribute("value", post["zip"]);
+			tab.document().getElementById("M060505_addrToBean_couCode").eval("this.value="+JSON.stringify(post["country"]));
+			tab.document().getElementById("M060505_addrToBean_tel").setAttribute("value", post["phone"]);
+			tab.document().getElementById("M060505_addrToBean_fax").setAttribute("value", post["fax"]);
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+	
+			tab.document().getElementById("M060800_shippingBean_sendType1").click();
+			tab.document().getElementsByName("item_button01")[0].click();
+			tab.wait();
+			tab.document().getElementById("M080100_itemBean_pkg").setAttribute("value", "USB CHIP YUBIKEY #"+serial);
+			tab.document().getElementById("M080100_itemBean_couCd").eval("this.value='SE'");
+			tab.document().getElementById("M080100_itemBean_cost_value").setAttribute("value", "14.99");
+			tab.document().getElementById("curUnit").eval("this.value='USD'");
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+			tab.document().getElementById("M060800_itemCount").setAttribute("value", "1");
+			if (is_gift) {
+				tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='0'"); // 3=merchandise 0=gift
+			} else {
+				tab.document().getElementById("M060800_shippingBean_pkgType").eval("this.value='3'"); // 3=merchandise 0=gift
+			}
+			tab.document().getElementById("M060800_shippingBean_pkgTotalPrice_value").eval("this.value='1200'");
+			tab.document().getElementById("M060800_ShippingBean_danger").click();
+			tab.document().findFirst("td > input.button").click();
+			tab.wait();
+	
+			tab.document().getElementById("M060900_shippingBean_totalWeight_value").eval("this.value='36'");
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+			tab.document().findFirst("div.mrgT10 > table > tbody > tr > td > input.button").click();
+			tab.wait();
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+	
+			// get all downloaded files
+			sys.log("waiting for files download");
+			var cnt = 2;
+			while(cnt) {
+				var file = tab.getDownloadedFile();
+				if (!file) {
+					sys.sleep(100);
+					continue;
+				}
+				sys.log("Got file: "+file.filename);
+				sys.filePutContentsB64("/home/magicaltux/Downloads/"+file.filename, file.filedata);
+				cnt--;
+			}
+	
+			// get tracking number
+			var ems_tracking = tab.document().findFirst("div.mrgT10 tr td.ce div").textContent().replace(/\s/,"");
+	
+			// click da button!
+			tab.document().findFirst("input.button").click();
+			tab.wait();
+		} catch(e) {
+			sys.log(e);
+			tab.interact();
+			sys.abort();
 		}
-	
-		// get tracking number
-		var ems_tracking = tab.document().findFirst("div.mrgT10 tr td.ce div").textContent().replace(/\s/,"");
-	
-		// click da button!
-		tab.document().findFirst("input.button").click();
-		tab.wait();
-	} catch(e) {
-		sys.log(e);
-		tab.interact();
-		sys.abort();
+	} else {
+		sys.log("JAPANESE CUSTOMER, no EMS, no tracking");
+		var ems_tracking = "N/A";
 	}
 
 	var yubicode = sys.exec("/home/magicaltux/projects/ykpers/pers.sh").replace(/\s/g, "");
