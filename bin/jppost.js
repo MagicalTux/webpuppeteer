@@ -55,15 +55,15 @@ while(true) {
 			tab.document().getElementById("M060505_addrToBean_companyName").setAttribute("value", post["company_name"]);
 			if (post["address2"]) {
 				tab.document().getElementById("M060505_addrToBean_add1").setAttribute("value", post["address"].substr(0,80));
-				tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address2"]);
+				tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address2"].substr(0,80));
 			} else {
 				tab.document().getElementById("M060505_addrToBean_add2").setAttribute("value", post["address"].substr(0,80));
 			}
 			tab.document().getElementById("M060505_addrToBean_add3").setAttribute("value", post["city"]);
-			tab.document().getElementById("M060505_addrToBean_pref").setAttribute("value", post["province"]);
+			tab.document().getElementById("M060505_addrToBean_pref").setAttribute("value", post["province"].substr(0,24));
 			tab.document().getElementById("M060505_addrToBean_postal").setAttribute("value", post["zip"]);
 			tab.document().getElementById("M060505_addrToBean_couCode").eval("this.value="+JSON.stringify(post["country"]));
-			tab.document().getElementById("M060505_addrToBean_tel").setAttribute("value", post["phone"]);
+			tab.document().getElementById("M060505_addrToBean_tel").setAttribute("value", post["phone"].replace(/[()]/g,''));
 			tab.document().getElementById("M060505_addrToBean_fax").setAttribute("value", post["fax"]);
 			tab.document().findFirst("input.button").click();
 			tab.wait();
@@ -99,12 +99,12 @@ while(true) {
 			tab.wait();
 			tab.document().findFirst("input.button").click();
 			tab.wait();
-			tab.document().findFirst("input.button").click();
-			tab.wait();
+//			tab.document().findFirst("input.button").click();
+//			tab.wait();
 	
 			// get all downloaded files
 			sys.log("waiting for files download");
-			var cnt = 2;
+			var cnt = 1;
 			while(cnt) {
 				var file = tab.getDownloadedFile();
 				if (!file) {
@@ -117,7 +117,7 @@ while(true) {
 			}
 	
 			// get tracking number
-			var ems_tracking = tab.document().findFirst("div.mrgT10 tr td.ce div").textContent().replace(/\s/,"");
+			var ems_tracking = tab.document().findFirst("div.mrgT10 tr td.le div").textContent().replace(/\s/,"");
 	
 			// click da button!
 			tab.document().findFirst("input.button").click();

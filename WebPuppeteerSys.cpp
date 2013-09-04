@@ -116,7 +116,7 @@ QScriptValue WebPuppeteerSys::signedPost(const QString &url, const QString &post
 	e.exec();
 
 	if (rep->error() != QNetworkReply::NoError) {
-		qDebug("GET error: %s", qPrintable(rep->errorString()));
+		qDebug("GET error: %s (body: %s)", qPrintable(rep->errorString()), qPrintable(rep->readAll()));
 		rep->deleteLater();
 		return parent->engine().currentContext()->throwError(QScriptContext::UnknownError, rep->errorString());
 	}
@@ -193,7 +193,7 @@ QScriptValue WebPuppeteerSys::mtgoxApi(const QString &path, const QString &post,
 	e.exec();
 
 	if (rep->error() != QNetworkReply::NoError) {
-		qDebug("GET error: %s", qPrintable(rep->errorString()));
+		qDebug("GET error: %s (body: %s)", qPrintable(rep->errorString()), qPrintable(rep->readAll()));
 		rep->deleteLater();
 		return parent->engine().currentContext()->throwError(QScriptContext::UnknownError, rep->errorString());
 	}
