@@ -246,6 +246,12 @@ QString WebPuppeteerSys::fileGetContents(QString filename) {
 	return QString::fromUtf8(f.readAll());
 }
 
+QString WebPuppeteerSys::fileGetContentsB64(QString filename) {
+	QFile f(filename);
+	if (!f.open(QIODevice::ReadOnly)) return QString();
+	return QString::fromLatin1(f.readAll().toBase64());
+}
+
 bool WebPuppeteerSys::filePutContents(QString filename, QString data) {
 	QFile f(filename);
 	if (!f.open(QIODevice::WriteOnly)) return false;

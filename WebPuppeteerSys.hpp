@@ -19,6 +19,7 @@ public slots:
 	QScriptValue mtgoxApi(const QString &path, const QString &post, const QString &api_key, const QString &api_secret);
 	QScriptValue newTab();
 	QString fileGetContents(QString filename);
+	QString fileGetContentsB64(QString filename);
 	bool filePutContents(QString filename, QString data);
 	bool filePutContentsB64(QString filename, QString data);
 	QScriptValue include(QString filename); // include a file
