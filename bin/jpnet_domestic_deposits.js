@@ -32,7 +32,6 @@ try {
 	tab.waitFinish(500);
 	tab.document().findFirst("form").eval("ToHonjitsu(this)");
 	tab.waitFinish(500);
-	tab.interact();
 	sys.log("JapanNet: Downloading...");
 	tab.document().eval("CsvClick()"); // access movements list
 	tab.waitFinish(500);
@@ -59,7 +58,7 @@ try {
 	tab.waitFinish(500);
 } catch(e) {
 	sys.log("Exception: "+e);
-	tab.interact();
+	//tab.interact();
 	// Logout
 	tab.document().eval("nbLogout()");
 	tab.waitFinish(500);
