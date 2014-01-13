@@ -4,6 +4,8 @@
 #include <QWebSettings>
 #include <QSslSocket>
 #include "WebPuppeteer.hpp"
+#include <QSslConfiguration>
+#include <QSsl>
 
 int main(int argc, char *argv[]) {
 	QApplication app(argc, argv);
@@ -13,6 +15,11 @@ int main(int argc, char *argv[]) {
 
 	if (!QSslSocket::supportsSsl()) {
 		qDebug("WARNING: SSL not supported");
+	} else {
+		QSslConfiguration config = QSslConfiguration::defaultConfiguration();
+		config.setProtocol(QSsl::SslV3);
+		QSslConfiguration::setDefaultConfiguration(config);
+//		request.setSslConfiguration(config);
 	}
 
 	if (args.size() > 1) {

@@ -45,7 +45,6 @@ public slots:
 
 	// access to DOM
 	QScriptValue document();
-	QString treeDump(); // for debug
 	void interact(); // create a window alloing the user to interact with the page, wait until closed
 	QScriptValue get(const QString &url);
 	void type(const QString &text);
@@ -91,7 +90,7 @@ signals:
 	void started();
 	void allFinished();
 public slots:
-	void spyFinished();
+	void spyFinished(QNetworkReply*);
 protected:
 	virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 private:
