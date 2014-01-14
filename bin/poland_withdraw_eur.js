@@ -17,7 +17,7 @@ while(true) {
 	}
 
 	sys.log(JSON.stringify(res["return"]));
-	if (res["return"]["meta"]["swift"].substr(0,4) == "CITI") {
+	if ( (res["return"]["meta"]["swift"].substr(0,4) == "CITI") || (res["return"]["meta"]["swift"].substr(0,4) == "IPBS") ) {
 		tx_success = {error: "Transfer to CITIBANK - avoid processing to avoid funds blocked", trx: res["return"]};
 		sys.signedPost("https://www.mtgox.com/api/1/generic/bank/withdraw_pull_res", "bank=fe2e074d-e127-42fb-bdd2-9b729029b313&json="+encodeURIComponent(JSON.stringify(tx_success)), api_key, api_secret);
 		continue;
