@@ -14,7 +14,7 @@
 #include "TimeoutTrigger.hpp"
 
 WebPuppeteerTabNetSpy::WebPuppeteerTabNetSpy(QObject *parent): QNetworkAccessManager(parent) {
-	connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(spyFinished()));
+	connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(spyFinished(QNetworkReply*)));
 	cnx_count = 0;
 }
 
@@ -23,36 +23,16 @@ int WebPuppeteerTabNetSpy::getCount() const {
 }
 
 QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData) {
-	QString op_str;
-	switch(op) {
-		case QNetworkAccessManager::HeadOperation: op_str = "HEAD"; break;
-		case QNetworkAccessManager::GetOperation: op_str = "GET"; break;
-		case QNetworkAccessManager::PutOperation: op_str = "PUT"; break;
-		case QNetworkAccessManager::PostOperation: op_str = "POST"; break;
-		case QNetworkAccessManager::DeleteOperation: op_str = "DELETE"; break;
-		case QNetworkAccessManager::CustomOperation: op_str = "CUSTOM"; break;
-		case QNetworkAccessManager::UnknownOperation: op_str = "?"; break;
-	}
-
-
 	//qDebug("Req: %s %s", qPrintable(op_str), qPrintable(req.url().toString()));
-	if (op == QNetworkAccessManager::PostOperation) {
-//		qDebug("post: %s", outgoingData->readAll().data());
-	}
 	QNetworkReply *reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
-	if (op == QNetworkAccessManager::PostOperation) {
-		// spy result too
-//		connect(reply, SIGNAL(finished()), this, SLOT(spyFinished()));
-	}
 	if (cnx_count == 0)
 		started();
 	cnx_count++;
 	return reply;
 }
 
-void WebPuppeteerTabNetSpy::spyFinished() {
+void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*) {
 	cnx_count--;
-	//qDebug("REQ finished");
 	if (cnx_count == 0)
 		allFinished();
 }
@@ -329,10 +309,6 @@ QScriptValue WebPuppeteerTab::eval(const QString &js) {
 
 QScriptValue WebPuppeteerTab::document() {
 	return parent->engine().newQObject(new WebPuppeteerWebElement(this, mainFrame()->documentElement()), QScriptEngine::ScriptOwnership);
-}
-
-QString WebPuppeteerTab::treeDump() {
-	return mainFrame()->renderTreeDump();
 }
 
 void WebPuppeteerTab::interact() {

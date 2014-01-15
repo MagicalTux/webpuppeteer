@@ -3,10 +3,13 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = webpuppeteer
 DEPENDPATH += .
 INCLUDEPATH += .
 QT += script network webkit
+greaterThan(QT_MAJOR_VERSION, 4) {
+	QT += widgets webkitwidgets printsupport
+}
 
 # Input
 HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp WebPuppeteerWebElement.hpp TimeoutTrigger.hpp
