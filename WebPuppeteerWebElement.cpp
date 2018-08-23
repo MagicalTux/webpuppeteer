@@ -94,13 +94,15 @@ QScriptValue WebPuppeteerWebElement::findAllContaining(const QString &text) {
 		bool check = false;
 		QString str;
 
-		if ((el.tagName() == "A") && (el.hasAttribute("href"))) {
+		QString tag = el.tagName().toLower();
+
+		if ((tag == "a") && (el.hasAttribute("href"))) {
 			str = el.toPlainText();
 			check = true;
-		} else if (el.tagName() == "BUTTON") {
+		} else if (tag == "button") {
 			str = el.attribute("Value")+el.toPlainText();
 			check = true;
-		} else if ((el.tagName() == "INPUT") && (el.attribute("type").toLower() == "submit")) {
+		} else if ((tag == "input") && (el.attribute("type").toLower() == "submit")) {
 			str = el.attribute("value");
 			check = true;
 		}
