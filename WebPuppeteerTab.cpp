@@ -126,7 +126,7 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 
 		// now write size of record
 		qint64 final_pos = data_output->pos();
-		qint64 d_size = final_pos - p;
+		qint64 d_size = final_pos - p - sizeof(p);
 
 		data_output->seek(p);
 		data_output->write((const char*)&d_size, sizeof(d_size));
