@@ -31,6 +31,24 @@ void WebPuppeteerTabNetSpy::setOutputFile(QFile *output) {
 		data_output->deleteLater();
 	}
 	data_output = output;
+	if (data_output != NULL) {
+		// write version
+		qint64 p = 1+8+8+8;
+		data_output->write((const char *)&p, sizeof(p));
+		data_output->write(QByteArray(1, '\xff')); // version
+
+		// timestamp
+		qint64 t = QDateTime::currentMSecsSinceEpoch();
+		data_output->write((const char *)&t, sizeof(t));
+
+		// query id (zero)
+		p = 0;
+		data_output->write((const char *)&p, sizeof(p));
+
+		// version
+		p = 0x01;
+		data_output->write((const char *)&p, sizeof(p));
+	}
 }
 
 QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetworkRequest &oreq, QIODevice *outgoingData) {

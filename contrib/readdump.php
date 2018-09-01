@@ -8,6 +8,7 @@ if (!$f) die('Usage: '.$_SERVER['argv'][0].' file'."\n");
 
 $fp = fopen($f, 'r');
 if (!$fp) die("failed to open file $f\n");
+$data_version = 0;
 
 // read file
 while(!feof($fp)) {
@@ -53,6 +54,12 @@ while(!feof($fp)) {
 			break;
 		case 4:
 			echo $prefix.'EOF'."\n";
+			break;
+		case 255:
+			// version packet
+			list(,$version) = unpack('q', fread($fp, 8));
+			echo $prefix.'Announced data version 0x'.dechex($version)."\n";
+			$data_version = $version; // upgrade version number for future parsing
 			break;
 		default:
 			echo $prefix.'Packet type '.$type."\n";
