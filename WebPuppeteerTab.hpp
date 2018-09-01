@@ -3,9 +3,12 @@
 #include <QWebElement>
 #include <QSslError>
 #include <QSet>
+#include <QFile>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 class WebPuppeteer;
+class WebPuppeteerTabNetSpy;
 
 class WebPuppeteerTab: public QWebPage {
 	Q_OBJECT;
@@ -27,6 +30,8 @@ public slots:
 	bool wait(int timeout = 60); // wait for page to finish loading
 	void waitFinish(int idle = 50); // 500ms default idle, if something loads again within those 500 ms, then wait until it finishes
 	QScriptValue getNewWindow(); // get latest opened window
+
+	bool saveNetwork(const QString &filename);
 
 	void overrideUserAgent(const QString &ua); // change user agent
 	void setDefaultCharset(const QString &charset);
@@ -74,6 +79,7 @@ protected:
 private:
 	bool return_bool;
 	WebPuppeteer *parent;
+	WebPuppeteerTabNetSpy *spy;
 
 	QSet<QByteArray> trusted_certificates;
 	QList<WebPuppeteerTab*> queue;
@@ -86,14 +92,17 @@ class WebPuppeteerTabNetSpy: public QNetworkAccessManager {
 public:
 	WebPuppeteerTabNetSpy(QObject *parent = 0);
 	int getCount() const;
+	void setOutputFile(QFile *output);
 signals:
 	void started();
 	void allFinished();
 public slots:
+	void spyConnectionData();
 	void spyFinished(QNetworkReply*);
 protected:
 	virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
 private:
 	int cnx_count;
+	qint64 cnx_index;
+	QFile *data_output;
 };
-

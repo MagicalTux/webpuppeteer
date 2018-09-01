@@ -3,6 +3,10 @@
 
 console.log("Loading google.com...");
 tab = sys.newTab();
+
+// dump all network traffic to this file
+tab.saveNetwork("google_img.bin");
+
 tab.browse("http://www.google.com/ncr");
 console.log("loaded, messing with the page");
 

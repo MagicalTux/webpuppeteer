@@ -16,19 +16,159 @@
 WebPuppeteerTabNetSpy::WebPuppeteerTabNetSpy(QObject *parent): QNetworkAccessManager(parent) {
 	connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(spyFinished(QNetworkReply*)));
 	cnx_count = 0;
+	data_output = NULL;
 }
 
 int WebPuppeteerTabNetSpy::getCount() const {
 	return cnx_count;
 }
 
-QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData) {
+void WebPuppeteerTabNetSpy::setOutputFile(QFile *output) {
+	if (data_output != NULL) {
+		data_output->close();
+		data_output->deleteLater();
+	}
+	data_output = output;
+}
+
+QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetworkRequest &oreq, QIODevice *outgoingData) {
+	cnx_index += 1;
+	// we end duplicating request :(
+	QNetworkRequest req = oreq;
+	req.setAttribute(QNetworkRequest::User, cnx_index);
+
+	if (data_output != NULL) {
+		// store request in output file
+		QByteArray op_str;
+
+		// fetch HTTP operation
+		switch (op) {
+			case QNetworkAccessManager::HeadOperation:
+				op_str = "HEAD";
+				break;
+			case QNetworkAccessManager::GetOperation:
+				op_str = "GET";
+				break;
+			case QNetworkAccessManager::PutOperation:
+				op_str = "PUT";
+				break;
+			case QNetworkAccessManager::PostOperation:
+				op_str = "POST";
+				break;
+			case QNetworkAccessManager::DeleteOperation:
+				op_str = "DELETE";
+				break;
+			case QNetworkAccessManager::CustomOperation:
+				op_str = req.attribute(QNetworkRequest::CustomVerbAttribute).toByteArray();
+				break;
+			case QNetworkAccessManager::UnknownOperation:
+				op_str = "????";
+				break;
+		}
+
+		// store request, first store size
+		qint64 p = 0;
+		data_output->write((const char *)&p, sizeof(p));
+		// keep start of record position in memory
+		p = data_output->pos() - sizeof(p);
+
+		// write request
+		data_output->write(QByteArray(1, '\x01'));
+		// write time
+		qint64 t = QDateTime::currentMSecsSinceEpoch();
+		data_output->write((const char *)&t, sizeof(t));
+		data_output->write((const char *)&cnx_index, sizeof(cnx_index));
+		data_output->write(op_str + QByteArray(1, 0) + req.url().toEncoded() + QByteArray(1, 0));
+
+		// write headers
+		QList<QByteArray> h = req.rawHeaderList();
+
+		// header count
+		int h_size = h.size();
+		data_output->write((const char *)&h_size, sizeof(h_size));
+
+		// each request header
+		for (int i = 0; i < h.size(); ++i) {
+			data_output->write(h.at(i) + QByteArray(1, 0) + req.rawHeader(h.at(i)) + QByteArray(1, 0));
+		}
+
+		// write body, if any
+		if (outgoingData != NULL) {
+			qint64 out_pos = outgoingData->pos();
+			qint64 out_end = outgoingData->size();
+			qint64 out_len = out_end - out_pos;
+
+			data_output->write((const char *)&out_len, sizeof(out_len));
+			if (out_len > 0) {
+				// write actual data
+				char buf[8192];
+
+				while(true) {
+					qint64 c = outgoingData->read((char*)&buf, sizeof(buf));
+					if (c == 0) {
+						break;
+					}
+					if (c == -1) {
+						// wtf?
+						qDebug("error reading outgoingData");
+						break;
+					}
+
+					data_output->write((const char*)&buf, c);
+				}
+
+				// reset position to initial state (hopefully seekable)
+				outgoingData->seek(out_pos);
+			}
+		}
+
+		// now write size of record
+		qint64 final_pos = data_output->pos();
+		qint64 d_size = final_pos - p;
+
+		data_output->seek(p);
+		data_output->write((const char*)&d_size, sizeof(d_size));
+		data_output->seek(final_pos);
+	}
 	//qDebug("Req: %s %s", qPrintable(op_str), qPrintable(req.url().toString()));
 	QNetworkReply *reply = QNetworkAccessManager::createRequest(op, req, outgoingData);
+
+	if (data_output != NULL) {
+		connect(reply, SIGNAL(readyRead()), this, SLOT(spyConnectionData()));
+	}
+
 	if (cnx_count == 0)
 		started();
 	cnx_count++;
 	return reply;
+}
+
+void WebPuppeteerTabNetSpy::spyConnectionData() {
+	QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+	qint64 ba = reply->bytesAvailable();
+	if (ba == 0) {
+		return;
+	}
+
+	qDebug("SPY: pos %lld ba %lld", reply->pos(), ba);
+
+	QByteArray sdata = reply->peek(ba);
+
+	// write partial response data
+	qint64 p = 1+8+8+ba; // qint64 + qint64 + ba
+	data_output->write((const char *)&p, sizeof(p));
+
+	data_output->write(QByteArray(1, '\x02'));
+
+	// write time
+	qint64 t = QDateTime::currentMSecsSinceEpoch();
+	data_output->write((const char *)&t, sizeof(t));
+
+	// write request id
+	data_output->write((const char *)&cnx_index, sizeof(cnx_index));
+
+	// write data
+	data_output->write(sdata, ba);
 }
 
 void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*) {
@@ -39,15 +179,26 @@ void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*) {
 
 WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 	parent = _parent;
+	spy = new WebPuppeteerTabNetSpy(this);
 
 	// define standard values
 	setViewportSize(QSize(1024,768));
 	setForwardUnsupportedContent(true);
 
-	setNetworkAccessManager(new WebPuppeteerTabNetSpy(this));
+	setNetworkAccessManager(spy);
 
 	connect(this, SIGNAL(unsupportedContent(QNetworkReply*)), this, SLOT(downloadFile(QNetworkReply*)));
 	connect(networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*,const QList<QSslError>&)), this, SLOT(handleSslErrors(QNetworkReply*,const QList<QSslError>&)));
+}
+
+bool WebPuppeteerTab::saveNetwork(const QString &filename) {
+	QFile *f = new QFile(filename);
+	if (!f->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		qDebug("saveNetwork: failed to create output file %s", qPrintable(filename));
+		return false;
+	}
+	spy->setOutputFile(f);
+	return true;
 }
 
 void WebPuppeteerTab::test(QNetworkReply*reply) {
