@@ -10,6 +10,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QTimer>
+#include <QBuffer>
 #include <QTemporaryFile>
 #include "TimeoutTrigger.hpp"
 
@@ -135,6 +136,7 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 
 	if (data_output != NULL) {
 		connect(reply, SIGNAL(readyRead()), this, SLOT(spyConnectionData()));
+		connect(reply, SIGNAL(metaDataChanged()), this, SLOT(spyMetaData()));
 	}
 
 	if (cnx_count == 0)
@@ -143,12 +145,52 @@ QNetworkReply *WebPuppeteerTabNetSpy::createRequest(Operation op, const QNetwork
 	return reply;
 }
 
+void WebPuppeteerTabNetSpy::spyMetaData() {
+	if (data_output == NULL) {
+		return;
+	}
+
+	QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
+	qint64 id = reply->attribute(QNetworkRequest::User).value<qint64>();
+
+	// store all headers via rawHeaderPairs()
+	QBuffer *buf = new QBuffer();
+
+	// metadata update
+	buf->write(QByteArray(1, '\x03'));
+
+	// write time
+	qint64 t = QDateTime::currentMSecsSinceEpoch();
+	buf->write((const char *)&t, sizeof(t));
+
+	// write request id
+	buf->write((const char *)&id, sizeof(id));
+
+	// write headers
+	const QList<QNetworkReply::RawHeaderPair> &headers = reply->rawHeaderPairs();
+	for(int i = 0; i < headers.length(); i++) {
+		const QPair<QByteArray,QByteArray> &v = headers.at(i);
+		buf->write(v.first + QByteArray(1, 0) + v.second + QByteArray(1, 0));
+	}
+
+	const QByteArray &b = buf->data();
+	qint64 p = b.length();
+
+	data_output->write((const char *)&p, sizeof(p));
+	data_output->write(b);
+}
+
 void WebPuppeteerTabNetSpy::spyConnectionData() {
+	if (data_output == NULL) {
+		return;
+	}
+
 	QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
 	qint64 ba = reply->bytesAvailable();
 	if (ba == 0) {
 		return;
 	}
+	qint64 id = reply->attribute(QNetworkRequest::User).value<qint64>();
 
 	qDebug("SPY: pos %lld ba %lld", reply->pos(), ba);
 
@@ -165,13 +207,28 @@ void WebPuppeteerTabNetSpy::spyConnectionData() {
 	data_output->write((const char *)&t, sizeof(t));
 
 	// write request id
-	data_output->write((const char *)&cnx_index, sizeof(cnx_index));
+	data_output->write((const char *)&id, sizeof(id));
 
 	// write data
 	data_output->write(sdata, ba);
 }
 
-void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*) {
+void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*reply) {
+	if (data_output != NULL) {
+		qint64 id = reply->attribute(QNetworkRequest::User).value<qint64>();
+
+		qint64 p = 1+8+8;
+		data_output->write((const char *)&p, sizeof(p));
+		data_output->write(QByteArray(1, '\x04')); // end of request
+
+		// write time
+		qint64 t = QDateTime::currentMSecsSinceEpoch();
+		data_output->write((const char *)&t, sizeof(t));
+
+		// write request id
+		data_output->write((const char *)&id, sizeof(id));
+	}
+
 	cnx_count--;
 	if (cnx_count == 0)
 		allFinished();

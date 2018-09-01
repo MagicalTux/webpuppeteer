@@ -98,6 +98,7 @@ signals:
 	void allFinished();
 public slots:
 	void spyConnectionData();
+	void spyMetaData();
 	void spyFinished(QNetworkReply*);
 protected:
 	virtual QNetworkReply *createRequest(Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0);
