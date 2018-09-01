@@ -250,6 +250,11 @@ WebPuppeteerTab::WebPuppeteerTab(WebPuppeteer *_parent): QWebPage(_parent) {
 }
 
 bool WebPuppeteerTab::saveNetwork(const QString &filename) {
+	if (filename == "") {
+		spy->setOutputFile(NULL); // will cause previous qfile to be closed
+		return true;
+	}
+
 	QFile *f = new QFile(filename);
 	if (!f->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		qDebug("saveNetwork: failed to create output file %s", qPrintable(filename));
