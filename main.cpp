@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 		qDebug("WARNING: SSL not supported");
 	} else {
 		QSslConfiguration config = QSslConfiguration::defaultConfiguration();
-		config.setProtocol(QSsl::SslV3);
+		config.setProtocol(QSsl::AnyProtocol); // we should use TLSv1 now
 		QSslConfiguration::setDefaultConfiguration(config);
 //		request.setSslConfiguration(config);
 	}

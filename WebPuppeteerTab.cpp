@@ -155,6 +155,7 @@ void WebPuppeteerTabNetSpy::spyMetaData() {
 
 	// store all headers via rawHeaderPairs()
 	QBuffer *buf = new QBuffer();
+	buf->open(QBuffer::ReadWrite);
 
 	// metadata update
 	buf->write(QByteArray(1, '\x03'));
