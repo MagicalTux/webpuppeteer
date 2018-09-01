@@ -17,6 +17,7 @@
 WebPuppeteerTabNetSpy::WebPuppeteerTabNetSpy(QObject *parent): QNetworkAccessManager(parent) {
 	connect(this, SIGNAL(finished(QNetworkReply*)), this, SLOT(spyFinished(QNetworkReply*)));
 	cnx_count = 0;
+	cnx_index = 0;
 	data_output = NULL;
 }
 
@@ -151,7 +152,7 @@ void WebPuppeteerTabNetSpy::spyMetaData() {
 	}
 
 	QNetworkReply* reply = qobject_cast<QNetworkReply*>(sender());
-	qint64 id = reply->attribute(QNetworkRequest::User).value<qint64>();
+	qint64 id = reply->request().attribute(QNetworkRequest::User).value<qint64>();
 
 	// store all headers via rawHeaderPairs()
 	QBuffer *buf = new QBuffer();
@@ -191,10 +192,11 @@ void WebPuppeteerTabNetSpy::spyConnectionData() {
 	if (ba == 0) {
 		return;
 	}
-	qint64 id = reply->attribute(QNetworkRequest::User).value<qint64>();
+	qint64 id = reply->request().attribute(QNetworkRequest::User).value<qint64>();
 
-	qDebug("SPY: pos %lld ba %lld", reply->pos(), ba);
+	qDebug("SPY: #%lld pos %lld ba %lld", id, reply->pos(), ba);
 
+	// we're assuming other recipient of QNetworkReply bytesAvailable() signal will always consume the whole buffer
 	QByteArray sdata = reply->peek(ba);
 
 	// write partial response data
@@ -216,7 +218,7 @@ void WebPuppeteerTabNetSpy::spyConnectionData() {
 
 void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*reply) {
 	if (data_output != NULL) {
-		qint64 id = reply->attribute(QNetworkRequest::User).value<qint64>();
+		qint64 id = reply->request().attribute(QNetworkRequest::User).value<qint64>();
 
 		qint64 p = 1+8+8;
 		data_output->write((const char *)&p, sizeof(p));

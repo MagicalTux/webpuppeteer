@@ -8,7 +8,6 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QProcess>
-#include "sha2.h"
 
 WebPuppeteerSys::WebPuppeteerSys(WebPuppeteer *_parent): QObject(_parent) {
 	parent = _parent;
