@@ -39,13 +39,17 @@ while(!feof($fp)) {
 		case 1: // request
 			$method = stream_get_line($fp, 4096, "\0");
 			$url = stream_get_line($fp, 4096, "\0");
-			echo $prefix.'Request: '.$method.' '.$url."\n";
+			list(, $header_count) = unpack('l', fread($fp, 4));
+			echo $prefix.'Request: '.$method.' '.$url." - $header_count headers\n";
 			break;
 		case 2:
 			echo $prefix.'Data ('.($l - 17).' bytes)'."\n";
 			break;
 		case 3:
-			echo $prefix.'Response headers'."\n";
+			list(, $http_code) = unpack('l', fread($fp, 4));
+			$http_resp = stream_get_line($fp, 4096, "\0");
+			list(, $header_count) = unpack('l', fread($fp, 4));
+			echo $prefix.'Response headers - HTTP '.$http_code.' '.$http_resp." - $header_count headers\n";
 			break;
 		case 4:
 			echo $prefix.'EOF'."\n";

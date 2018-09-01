@@ -168,8 +168,18 @@ void WebPuppeteerTabNetSpy::spyMetaData() {
 	// write request id
 	buf->write((const char *)&id, sizeof(id));
 
+	int http_status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+	QByteArray http_reason = reply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toByteArray();
+
+	buf->write((const char *)&http_status_code, sizeof(http_status_code));
+	buf->write(http_reason + QByteArray(1, 0));
+
 	// write headers
 	const QList<QNetworkReply::RawHeaderPair> &headers = reply->rawHeaderPairs();
+	// headers count
+	int h_size = headers.size();
+	buf->write((const char *)&h_size, sizeof(h_size));
+
 	for(int i = 0; i < headers.length(); i++) {
 		const QPair<QByteArray,QByteArray> &v = headers.at(i);
 		buf->write(v.first + QByteArray(1, 0) + v.second + QByteArray(1, 0));
