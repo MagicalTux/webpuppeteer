@@ -73,6 +73,7 @@ public slots:
 protected:
 	virtual void javaScriptAlert(QWebFrame*, const QString &msg);
 	virtual bool javaScriptConfirm(QWebFrame*, const QString &msg);
+	virtual bool javaScriptPrompt(QWebFrame *frame, const QString &msg, const QString &defaultValue, QString *result);
 	virtual QWebPage *createWindow(WebWindowType type);
 	virtual QString userAgentForUrl(const QUrl&) const;
 	virtual void javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID);

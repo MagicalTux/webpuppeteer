@@ -365,6 +365,12 @@ bool WebPuppeteerTab::javaScriptConfirm(QWebFrame*, const QString &msg) {
 	return true;
 }
 
+bool WebPuppeteerTab::javaScriptPrompt(QWebFrame *, const QString &msg, const QString &defaultValue, QString *result) {
+	qDebug("Got javascript prompt: %s", qPrintable(msg));
+	*result = defaultValue;
+	return false;
+}
+
 bool WebPuppeteerTab::supportsExtension(Extension e) {
 	switch(e) {
 		case QWebPage::ChooseMultipleFilesExtension: return true;
