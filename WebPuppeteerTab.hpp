@@ -75,6 +75,7 @@ protected:
 	virtual bool javaScriptConfirm(QWebFrame*, const QString &msg);
 	virtual QWebPage *createWindow(WebWindowType type);
 	virtual QString userAgentForUrl(const QUrl&) const;
+	virtual void javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID);
 
 private:
 	bool return_bool;

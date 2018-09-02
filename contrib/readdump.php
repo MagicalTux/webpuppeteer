@@ -8,19 +8,20 @@ $f = $_SERVER['argv'][1];
 if (!$f) die('Usage: '.$_SERVER['argv'][0].' file'."\n");
 
 $obj = new WebPuppeteer($f);
+
 $count = $obj->getLastPacket();
 for($i = 1; $i <= $count; $i++) {
 	$pkt = $obj->getPacketData($i);
 	$prefix = date('Y-m-d H:i:s', $pkt['time']/1000).' #'.$pkt['id'].': ';
 	switch($pkt['type']) {
 		case WebPuppeteer::TYPE_REQ:
-			echo $prefix.'Request: '.$pkt['method'].' '.$pkt['url'].' - '.$pkt['headers']." headers\n";
+			echo $prefix.'Request: '.$pkt['method'].' '.$pkt['url'].' - '.json_encode($pkt['headers'])."\n";
 			break;
 		case WebPuppeteer::TYPE_DATA:
 			echo $prefix.'Data ('.$pkt['body'].' bytes)'."\n";
 			break;
 		case WebPuppeteer::TYPE_RES:
-			echo $prefix.'Response headers - HTTP '.$pkt['http_code'].' '.$pkt['http_resp'].' - '.$pkt['headers']." headers\n";
+			echo $prefix.'Response headers - HTTP '.$pkt['http_code'].' '.$pkt['http_resp'].' - '.json_encode($pkt['headers'])."\n";
 			break;
 		case WebPuppeteer::TYPE_EOF:
 			echo $prefix.'EOF'."\n";

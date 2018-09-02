@@ -258,6 +258,8 @@ void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*reply) {
 
 		// write request id
 		data_output->write((const char *)&id, sizeof(id));
+
+		data_output->flush();
 	}
 
 	cnx_count--;
@@ -619,6 +621,10 @@ QString WebPuppeteerTab::getHtml() {
 
 void WebPuppeteerTab::overrideUserAgent(const QString &ua) {
 	user_agent = ua;
+}
+
+void WebPuppeteerTab::javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID) {
+	qDebug("JavaScript %s:%d: %s", qPrintable(sourceID), lineNumber, qPrintable(message));
 }
 
 QString WebPuppeteerTab::userAgentForUrl(const QUrl&) const {
