@@ -11,6 +11,10 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 	QT += widgets webkitwidgets printsupport
 }
 
+# for make install
+target.path = /usr/local/bin
+INSTALLS += target
+
 # Input
 HEADERS += WebPuppeteer.hpp WebPuppeteerSys.hpp WebPuppeteerTab.hpp WebPuppeteerWebElement.hpp TimeoutTrigger.hpp
 SOURCES += main.cpp WebPuppeteer.cpp WebPuppeteerSys.cpp WebPuppeteerTab.cpp WebPuppeteerWebElement.cpp TimeoutTrigger.cpp

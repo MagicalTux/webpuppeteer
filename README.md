@@ -6,6 +6,18 @@ This project is about allowing a simple ECMA-compliant script to call pages in a
 
 The goal is to ease automation of access on banks and such way more than what would be considered socially acceptable. The whole thing ain't finished yet, but will allow clicking links just by their visible text, clicking on arbitrary locations of pages, automatically exporting whole tables as CSV, and way more.
 
+## Installation
+
+Pre-requisites can be installed easily, for example for Ubuntu:
+
+	sudo apt install qt5-qmake qtscript5-dev libqt5webkit5-dev
+
+The compilation is easy:
+
+	qmake -qt=5
+	make
+	make install
+
 # Headless?
 
 Running headless is easy, just use xvfb.
