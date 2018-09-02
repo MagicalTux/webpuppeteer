@@ -6,6 +6,8 @@ This project is about allowing a simple ECMA-compliant script to call pages in a
 
 The goal is to ease automation of access on banks and such way more than what would be considered socially acceptable. The whole thing ain't finished yet, but will allow clicking links just by their visible text, clicking on arbitrary locations of pages, automatically exporting whole tables as CSV, and way more.
 
+Of course, the system can also generate screenshots or PDF of webpages, making it easy to capture screenshots and more easily. It can also record all network activity (see saveNetwork()) making it easy to create audit records that can be confirmed afterward. Be careful all network activity is saved and those files may contain sensitive information depending on how you use them.
+
 # Headless?
 
 Running headless is easy, just use xvfb.
