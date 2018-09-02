@@ -258,6 +258,8 @@ void WebPuppeteerTabNetSpy::spyFinished(QNetworkReply*reply) {
 
 		// write request id
 		data_output->write((const char *)&id, sizeof(id));
+
+		data_output->flush();
 	}
 
 	cnx_count--;
@@ -292,11 +294,6 @@ bool WebPuppeteerTab::saveNetwork(const QString &filename) {
 	}
 	spy->setOutputFile(f);
 	return true;
-}
-
-void WebPuppeteerTab::test(QNetworkReply*reply) {
-	QNetworkRequest req = reply->request();
-	qDebug("REQ finished: %s", qPrintable(req.url().toString()));
 }
 
 QWebPage *WebPuppeteerTab::createWindow(WebWindowType) {
@@ -361,6 +358,12 @@ void WebPuppeteerTab::javaScriptAlert(QWebFrame*, const QString &msg) {
 bool WebPuppeteerTab::javaScriptConfirm(QWebFrame*, const QString &msg) {
 	qDebug("Got javascript confirm: %s", qPrintable(msg));
 	return true;
+}
+
+bool WebPuppeteerTab::javaScriptPrompt(QWebFrame *, const QString &msg, const QString &defaultValue, QString *result) {
+	qDebug("Got javascript prompt: %s", qPrintable(msg));
+	*result = defaultValue;
+	return false;
 }
 
 bool WebPuppeteerTab::supportsExtension(Extension e) {
@@ -619,6 +622,10 @@ QString WebPuppeteerTab::getHtml() {
 
 void WebPuppeteerTab::overrideUserAgent(const QString &ua) {
 	user_agent = ua;
+}
+
+void WebPuppeteerTab::javaScriptConsoleMessage(const QString &message, int lineNumber, const QString &sourceID) {
+	qDebug("JavaScript %s:%d: %s", qPrintable(sourceID), lineNumber, qPrintable(message));
 }
 
 QString WebPuppeteerTab::userAgentForUrl(const QUrl&) const {

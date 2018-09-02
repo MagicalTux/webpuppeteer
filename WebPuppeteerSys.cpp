@@ -49,12 +49,12 @@ QScriptValue WebPuppeteerSys::get(const QString &url) {
 	return parent->engine().newVariant((rep->readAll()));
 }
 
-QScriptValue WebPuppeteerSys::post(const QString &url, const QString &post) {
+QScriptValue WebPuppeteerSys::post(const QString &url, const QString &post, const QString content_type) {
 	QByteArray data_post;
 	data_post = post.toUtf8();
 
 	QNetworkRequest req(url);
-	req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+	req.setHeader(QNetworkRequest::ContentTypeHeader, content_type);
 	//req.setRawHeader("Rest-Key", api_key.toLatin1());
 
 	QNetworkReply *rep = net.post(req, data_post);
