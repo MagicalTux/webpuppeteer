@@ -222,7 +222,7 @@ void WebPuppeteerTabNetSpy::spyConnectionData() {
 	}
 	qint64 id = reply->request().attribute(QNetworkRequest::User).value<qint64>();
 
-	qDebug("SPY: #%lld pos %lld ba %lld", id, reply->pos(), ba);
+	//qDebug("SPY: #%lld pos %lld ba %lld", id, reply->pos(), ba);
 
 	// we're assuming other recipient of QNetworkReply bytesAvailable() signal will always consume the whole buffer
 	QByteArray sdata = reply->peek(ba);
