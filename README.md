@@ -1,12 +1,15 @@
 # WebPuppeteer
 
-Because I hate people, I made sure the project's name was easy enough to typo.
+This project is about allowing a simple ECMA-compliant script to call pages in a browser environment, and interact with said pages as it pleases.
 
-This project is about allowing a simple ECMA-compliant script to call pages in a browser environement, and mess with said pages as it pleases. Other actions such as loading HTTP content directly and separately are also eventually possible.
+This project helps with two different goals:
 
-The goal is to ease automation of access on banks and such way more than what would be considered socially acceptable. The whole thing ain't finished yet, but will allow clicking links just by their visible text, clicking on arbitrary locations of pages, automatically exporting whole tables as CSV, and way more.
+* Allow performing tests on existing websites by accessing said sites, clicking, etc, as a normal user would and report any resulting issue
+* Allow automation of access to third parties (banks, etc) when no automation API is available
 
-Of course, the system can also generate screenshots or PDF of webpages, making it easy to capture screenshots and more easily. It can also record all network activity (see saveNetwork()) making it easy to create audit records that can be confirmed afterward. Be careful all network activity is saved and those files may contain sensitive information depending on how you use them.
+I've been using Selenium IDE with Firefox for a long time, but in some cases is lacked the easy access to custom operations that webpuppeteer provides with ECMA scripting. While more limited (Webkit only) this projects offers more freedom in what can be done, including altering the page contents itself or running JavaScript within the context of the browser.
+
+WebPuppeteer can also generate screenshots or PDF of webpages to document results or issues. It can also record all network activity (see saveNetwork()) making it easy to create audit records that can be confirmed afterward. Be careful all network activity is saved and those files may contain sensitive information depending on how you use them.
 
 ## Installation
 
@@ -29,6 +32,8 @@ To have xvfb on Gentoo:
 - x11-base/xorg-server minimal
 
 # Tell me what that scripts can do
+
+There are generally three objects scripts will interact with. WebPuppeteerSys is the root object (available in global variable sys) and allows basic control as well as instanciating tabs. A "tab" is similar to a browser tab and can be used to browse to urls, take screenshots, etc. Finally, accessing a tab's root element allows searching for sub-elements, and even clicking these.
 
 ## WebPuppeteerSys
 
@@ -53,7 +58,7 @@ sys.sleep(1000);
 
 ### newTab()
 
-Opens a new tab and returns a new WebPuppeteerTab object.
+Opens a new tab and returns a new WebPuppeteerTab object (see below).
 
 ### get(url)
 
@@ -64,6 +69,8 @@ var next = JSON.parse(sys.get("http://localhost/next.php"));
 ```
 
 ## WebPuppeteerTab
+
+A WebPuppeteerTab is a browser tab instance. Each tab is independent from each other, and can be accessing different websites at the same time.
 
 ### browse(url)
 
