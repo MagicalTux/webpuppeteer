@@ -68,8 +68,6 @@ public slots:
 	void downloadFile(QNetworkReply*);
 	void downloadFileFinished(QNetworkReply*reply=0);
 
-	void test(QNetworkReply*);
-
 protected:
 	virtual void javaScriptAlert(QWebFrame*, const QString &msg);
 	virtual bool javaScriptConfirm(QWebFrame*, const QString &msg);

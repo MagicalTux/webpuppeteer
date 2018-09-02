@@ -296,11 +296,6 @@ bool WebPuppeteerTab::saveNetwork(const QString &filename) {
 	return true;
 }
 
-void WebPuppeteerTab::test(QNetworkReply*reply) {
-	QNetworkRequest req = reply->request();
-	qDebug("REQ finished: %s", qPrintable(req.url().toString()));
-}
-
 QWebPage *WebPuppeteerTab::createWindow(WebWindowType) {
 	// we don't care about the type, since modal has no meaning here
 	WebPuppeteerTab *tab = new WebPuppeteerTab(parent);
