@@ -24,6 +24,10 @@ void WebPuppeteerSys::sleep(int msecs) {
 	e.exec();
 }
 
+QScriptValue WebPuppeteerSys::getenv(const QString &var) const {
+	return QString::fromUtf8(qgetenv(qPrintable(var)));
+}
+
 QScriptValue WebPuppeteerSys::newTab() {
 	// open a new "browser tab", return it
 	WebPuppeteerTab *tab = new WebPuppeteerTab(parent);

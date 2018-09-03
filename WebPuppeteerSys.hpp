@@ -17,6 +17,7 @@ public slots:
 	QScriptValue get(const QString &url);
 	QScriptValue post(const QString &url, const QString &post, const QString content_type="application/x-www-form-urlencoded");
 	QScriptValue newTab();
+	QScriptValue getenv(const QString &var) const;
 	QString fileGetContents(QString filename);
 	QString fileGetContentsB64(QString filename);
 	bool filePutContents(QString filename, QString data);
