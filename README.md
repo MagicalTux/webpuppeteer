@@ -7,7 +7,7 @@ This project helps with two different goals:
 * Allow performing tests on existing websites by accessing said sites, clicking, etc, as a normal user would and report any resulting issue
 * Allow automation of access to third parties (banks, etc) when no automation API is available
 
-I've been using Selenium IDE with Firefox for a long time, but in some cases is lacked the easy access to custom operations that webpuppeteer provides with ECMA scripting. While more limited (Webkit only) this projects offers more freedom in what can be done, including altering the page contents itself or running JavaScript within the context of the browser.
+I've been using Selenium IDE with Firefox for a long time, but in some cases is lacked the easy access to custom operations that webpuppeteer provides with ECMA scripting. While more limited in some ways (Webkit only) this projects offers more freedom in what can be done, including altering the page contents itself or running JavaScript within the context of the browser.
 
 WebPuppeteer can also generate screenshots or PDF of webpages to document results or issues. It can also record all network activity (see saveNetwork()) making it easy to create audit records that can be confirmed afterward. Be careful all network activity is saved and those files may contain sensitive information depending on how you use them.
 
@@ -23,7 +23,7 @@ The compilation is easy:
 	make
 	make install
 
-# Headless?
+## Headless?
 
 Running headless is easy, just use xvfb.
 
@@ -49,7 +49,7 @@ sys.log("Ready!");
 
 ### sleep(msec)
 
-A bold name for a bold function. It basically waits for the specified amount of time (for example if a page contains some JS code that takes a bit of time to be ready) specified in milliseconds.
+Wait for a specified number of milliseconds (for example to avoid making too many queries against a given website).
 
 For example to wait one second:
 ```javascript
@@ -76,6 +76,11 @@ A WebPuppeteerTab is a browser tab instance. Each tab is independent from each o
 
 Browse to given url (paths relative to the current page are acceptable), waits until url is fully loaded.
 
+```javascript
+var tab = sys.newTab();
+tab.browse("https://www.google.com/");
+```
+
 ### post(url, post data, content type)
 
 Posts data to url as if submitted by browser. content type is application/x-www-form-urlencoded by default.
@@ -94,7 +99,7 @@ In case a script/etc opened a new window, gets that window (returns a WebPuppete
 
 ### back()
 
-Go back one page.
+Go back one page (equivalent of browser back button).
 
 ### reload(force no cache)
 
