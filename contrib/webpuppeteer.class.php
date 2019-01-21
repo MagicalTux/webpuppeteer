@@ -24,6 +24,26 @@ class WebPuppeteer {
 		return $this->index['url'][$url][$method];
 	}
 
+	public function getStreamRequest($stream) {
+		return $this->getStreamPacket($stream, self::TYPE_REQ);
+	}
+
+	public function getStreamResponse($stream) {
+		return $this->getStreamPacket($stream, self::TYPE_RES);
+	}
+
+	protected function getStreamPacket($stream, $type) {
+		$info = $this->index['stream'][$stream];
+		if (!$info) throw new \Exception('Invalid stream provided');
+
+		foreach($info as $p) {
+			$pkt = $this->getPacket($p);
+			if ($pkt['type'] == $type) return $this->getPacketData($p);
+		}
+
+		return false;
+	}
+
 	public function getStreamData($stream, $fp) {
 		$info = $this->index['stream'][$stream];
 		if (!$info) throw new \Exception('Invalid stream provided');
